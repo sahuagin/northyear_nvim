@@ -144,4 +144,8 @@ require('packer').startup(function(use)
     use { 'rcarriga/nvim-dap-ui', opt = true }
     use { 'nvim-telescope/telescope-dap.nvim', opt = true }
     use { 'theHamsta/nvim-dap-virtual-text', opt = true }
+
+    if PACKER_BOOTSTRAP_SUCCESS then
+        require('packer').sync()
+    end
 end)
