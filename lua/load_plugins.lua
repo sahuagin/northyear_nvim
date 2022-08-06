@@ -27,13 +27,6 @@ require('packer').startup(function(use)
     use { 'kyazdani42/nvim-tree.lua', opt = true } -- file explorer
     use { 'milanglacier/smartim', opt = true } -- automatically switch input method when switch mode
     use { 'sindrets/winshift.nvim', opt = true }
-    use {
-        'glacambre/firenvim',
-        opt = true,
-        run = function()
-            vim.fn['firenvim#install'](0)
-        end,
-    }
     -- very simple, naive completion without LSP
     -- 'skywind3000/vim-auto-popmenu'
     -- 'skywind3000/vim-dict'
@@ -135,7 +128,6 @@ require('packer').startup(function(use)
     -- Other cli tools, ripgrep, hover, markdown, etc
     use { 'nvim-pack/nvim-spectre', opt = true }
     use { 'JASONews/glow-hover', opt = true }
-    use { 'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', opt = true }
     use { 'ludovicchabant/vim-gutentags', opt = true }
 
     -- Debugger
