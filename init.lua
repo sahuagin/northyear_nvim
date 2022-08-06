@@ -9,9 +9,9 @@ else
     require('impatient').enable_profile()
 end
 
-require('impatient').enable_profile()
 require 'basic_settings'
 require 'load_plugins'
+
 if not need_bootstrap then
     require 'load_configs'
 end
