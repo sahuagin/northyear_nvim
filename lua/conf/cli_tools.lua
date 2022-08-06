@@ -197,7 +197,6 @@ end
 M.load.diffview()
 M.load.gitsigns()
 M.load.iron()
-M.load.mkdp()
 M.load.neogit()
 M.load.spectre()
 M.load.toggleterm()
