@@ -1,5 +1,5 @@
 local packer_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
-local need_bootstrap = vim.fn.empty(vim.fn.glob(packer_path)) > 0
+local need_bootstrap = not pcall(require, 'packer')
 
 if need_bootstrap then
     PACKER_BOOTSTRAP_SUCCESS =
