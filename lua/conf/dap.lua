@@ -6,7 +6,7 @@ vim.cmd.packadd { 'nvim-dap-virtual-text', bang = true }
 
 local mypath = require 'bin_path'
 
-require('dap-python').setup(mypath.python)
+require('dap-python').setup(mypath.debugpy)
 
 local dap = require 'dap'
 local dapui = require 'dapui'
