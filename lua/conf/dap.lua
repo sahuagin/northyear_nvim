@@ -4,9 +4,10 @@ vim.cmd.packadd { 'nvim-dap-ui', bang = true }
 vim.cmd.packadd { 'telescope-dap.nvim', bang = true }
 vim.cmd.packadd { 'nvim-dap-virtual-text', bang = true }
 
+<<<<<<< HEAD
 local mypath = require 'bin_path'
 
-require('dap-python').setup(mypath.debugpy)
+require('dap-python').setup(os.getenv 'HOME' .. '/debugpy/VENV/bin/python3')
 
 local dap = require 'dap'
 local dapui = require 'dapui'
