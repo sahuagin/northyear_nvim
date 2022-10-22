@@ -4,7 +4,7 @@ vim.cmd.packadd { 'nvim-lspconfig', bang = true }
 vim.cmd.packadd { 'lspsaga.nvim', bang = true }
 vim.cmd.packadd { 'aerial.nvim', bang = true }
 vim.cmd.packadd { 'lsp_signature.nvim', bang = true }
-vim.cmd.packadd { 'lua-dev.nvim', bang = true }
+vim.cmd.packadd { 'neodev.nvim', bang = true }
 vim.cmd.packadd { 'nvim-navic', bang = true }
 
 local opts = function(options)
@@ -137,12 +137,12 @@ local on_attach = function(client, bufnr)
 
     require('aerial').on_attach(client, bufnr)
     require('conf.lsp_tools').signature(bufnr)
-    require("nvim-navic").attach(client, bufnr)
+    require('nvim-navic').attach(client, bufnr)
 end
 
 -- Setup lspconfig.
 -- -- -- copied from https://github.com/ray-x/lsp_signature.nvim/blob/master/tests/init_paq.lua
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 capabilities.textDocument.completion.completionItem.resolveSupport = {
     properties = { 'documentation', 'detail', 'additionalTextEdits' },
@@ -166,8 +166,7 @@ require('lspconfig').pyright.setup {
     capabilities = capabilities,
     root_dir = python_root_dir,
     settings = {
-        python = {
-        },
+        python = {},
     },
     flags = {
         debounce_text_changes = 250,
@@ -183,10 +182,8 @@ local r_config = {
     settings = {
         r = {
             lsp = {
-                -- debug = true,
                 log_file = '~/.cache/nvim/r_lsp_log.log',
-                lint_cache = true,
-                -- max_completions = 40,
+                diagnostics = false, -- r-lsp + lintr is currently problematic
             },
         },
     },
@@ -212,7 +209,7 @@ require('lspconfig').clangd.setup {
     capabilities = clangd_capabilities,
 }
 
-require('lua-dev').setup {}
+require('neodev').setup {}
 
 require('lspconfig').sumneko_lua.setup {
     on_attach = on_attach,
