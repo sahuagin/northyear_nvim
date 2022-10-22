@@ -137,6 +137,7 @@ require('packer').startup(function(use)
     use { 'nvim-pack/nvim-spectre', opt = true }
     use { 'JASONews/glow-hover', opt = true }
     use { 'ludovicchabant/vim-gutentags', opt = true }
+    use { 'nvim-orgmode/orgmode', opt = true }
 
     -- Debugger
     use { 'mfussenegger/nvim-dap', opt = true }
