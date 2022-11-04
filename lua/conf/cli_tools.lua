@@ -177,6 +177,7 @@ M.load.pandoc = function()
     vim.filetype.add {
         extension = {
             md = 'markdown.pandoc',
+            qmd = 'rmd',
         },
     }
 
@@ -207,6 +208,7 @@ M.load.vimtex = function()
     end
 
     autocmd('FileType', {
+        pattern = 'tex',
         group = my_augroup,
         desc = 'set keymap for tex',
         callback = function()
@@ -323,6 +325,7 @@ M.load.nvimr = function()
     vim.g.R_buffer_opts = 'buflisted' -- nvimr prevents repl window to be automatically resized, reenable it
     vim.g.R_objbr_place = 'console,right' -- show object browser at the right of the console
     vim.g.R_nvim_wd = 1
+    vim.g.R_rmdchunk = 0
 
     local function opts_desc(opts)
         return {
