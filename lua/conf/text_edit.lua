@@ -84,6 +84,7 @@ end
 M.load.mini_ai = function()
     vim.cmd.packadd { 'mini.nvim', bang = true }
     require('mini.ai').setup {
+        search_method = 'cover',
         mappings = {
             -- Next/last variants
             around_next = 'an',
@@ -91,9 +92,10 @@ M.load.mini_ai = function()
             around_last = 'aN',
             inside_last = 'iN',
             -- Move cursor to corresponding edge of `a` textobject
-            goto_left = 'g[',
-            goto_right = 'g]',
+            goto_left = 'g(',
+            goto_right = 'g)',
         },
+        n_lines = 100,
     }
 end
 
@@ -139,20 +141,25 @@ M.load.textobj = function()
     vim.g.textobj_between_no_default_key_mappings = 1
     vim.g.textobj_chainmember_no_default_key_mappings = 1
 
-    keymap('x', 'ab', '<Plug>(textobj-between-a)', { noremap = true, silent = true })
-    keymap('o', 'ab', '<Plug>(textobj-between-a)', { noremap = true, silent = true })
-    keymap('x', 'ib', '<Plug>(textobj-between-i)', { noremap = true, silent = true })
-    keymap('o', 'ib', '<Plug>(textobj-between-i)', { noremap = true, silent = true })
+    keymap('x', 'ab', '<Plug>(textobj-between-a)', {})
+    keymap('o', 'ab', '<Plug>(textobj-between-a)', {})
+    keymap('x', 'ib', '<Plug>(textobj-between-i)', {})
+    keymap('o', 'ib', '<Plug>(textobj-between-i)', {})
 
-    keymap('x', 'a.', '<Plug>(textobj-chainmember-a)', { noremap = true, silent = true })
-    keymap('o', 'i.', '<Plug>(textobj-chainmember-i)', { noremap = true, silent = true })
-    keymap('x', 'a.', '<Plug>(textobj-chainmember-a)', { noremap = true, silent = true })
-    keymap('o', 'i.', '<Plug>(textobj-chainmember-i)', { noremap = true, silent = true })
+    keymap('o', 'a.', '<Plug>(textobj-chainmember-a)', {})
+    keymap('o', 'i.', '<Plug>(textobj-chainmember-i)', {})
+    keymap('x', 'a.', '<Plug>(textobj-chainmember-a)', {})
+    keymap('x', 'i.', '<Plug>(textobj-chainmember-i)', {})
 end
 
 M.load.colorizer = function()
     vim.cmd.packadd { 'nvim-colorizer.lua', bang = true }
     require('colorizer').setup()
+end
+
+M.load.easy_align = function()
+    keymap('x', 'ga', '<Plug>(EasyAlign)', {})
+    keymap('n', 'ga', '<Plug>(EasyAlign)', {})
 end
 
 if not vim.g.vscode then
@@ -168,5 +175,6 @@ M.load.substitute()
 M.load.mini_ai()
 M.load.textobj()
 M.load.mini_surround()
+M.load.easy_align()
 
 return M
