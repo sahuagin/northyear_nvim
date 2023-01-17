@@ -55,10 +55,44 @@ local on_attach = function(client, bufnr)
     )
 
     -- hover
-    bufmap(bufnr, 'n', 'gh', '<cmd>Lspsaga hover_doc<CR>', opts { 'lspsaga hover doc' })
+    bufmap(
+        bufnr,
+        'n',
+        'gh',
+        '',
+        opts {
+            'lsp hover doc with builtin renderer.',
+            function()
+                vim.lsp.handlers['textDocument/hover'] = require('conf.lsp_tools').original_hover_handler
+                vim.lsp.buf.hover()
+                -- after typing gh, within 400 milliseconds typing h will switch into the popup window
+                vim.api.nvim_buf_set_keymap(0, 'n', 'h', '', {
+                    callback = function()
+                        local current_buf = vim.api.nvim_get_current_buf()
+                        vim.lsp.buf.hover()
+                        vim.defer_fn(function()
+                            vim.api.nvim_buf_del_keymap(current_buf, 'n', 'h')
+                        end, 400)
+                    end,
+                })
+            end,
+        }
+    )
 
     -- use glow-hover
-    bufmap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts { 'lsp hover by glow' })
+    bufmap(
+        bufnr,
+        'n',
+        'K',
+        '',
+        opts {
+            'lsp hover by glow',
+            function()
+                require('conf.lsp_tools').load.glow_hover()
+                vim.lsp.buf.hover()
+            end,
+        }
+    )
 
     -- signaturehelp
     bufmap(bufnr, 'n', '<Leader>ls', '', opts { 'signature help', vim.lsp.buf.signature_help })
@@ -98,7 +132,7 @@ local on_attach = function(client, bufnr)
             end,
         }
     )
-    bufmap(bufnr, 'n', '<Leader>lD', '<cmd>Lspsaga preview_definition<CR>', opts { 'lspsaga preview definition' })
+    bufmap(bufnr, 'n', '<Leader>lD', '<cmd>Lspsaga peek_definition<CR>', opts { 'lspsaga preview definition' })
 
     -- workspace
     local bufcmd = vim.api.nvim_buf_create_user_command
@@ -136,121 +170,201 @@ local on_attach = function(client, bufnr)
     bufmap(bufnr, 'n', '<Leader>ll', '<cmd>Lspsaga show_line_diagnostics<CR>', opts { 'lspsaga line diagnostic' })
 
     require('conf.lsp_tools').signature(bufnr)
-    require('nvim-navic').attach(client, bufnr)
+
+    if client.server_capabilities.documentSymbolProvider then
+        require('nvim-navic').attach(client, bufnr)
+    end
 end
 
 -- Setup lspconfig.
 -- -- -- copied from https://github.com/ray-x/lsp_signature.nvim/blob/master/tests/init_paq.lua
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-capabilities.textDocument.completion.completionItem.resolveSupport = {
-    properties = { 'documentation', 'detail', 'additionalTextEdits' },
-}
 
 -- Copied from lspconfig/server_configurations/pylsp.lua
-local function python_root_dir(fname)
-    local util = require 'lspconfig.util'
-    local root_files = {
-        'pyproject.toml',
-        'setup.py',
-        'setup.cfg',
-        'requirements.txt',
-        'Pipfile',
+
+local enabled_lsps = { 'r', 'python', 'bash', 'cpp', 'vim', 'nvim', 'pinyin', 'ltex_ls', 'sql', 'latex' }
+
+local lsp_configs = {}
+
+lsp_configs.python = function()
+    local function python_root_dir(fname)
+        local util = require 'lspconfig.util'
+        local root_files = {
+            'pyproject.toml',
+            'setup.py',
+            'setup.cfg',
+            'requirements.txt',
+            'Pipfile',
+        }
+        return util.root_pattern(unpack(root_files))(fname) or util.find_git_ancestor(fname)
+    end
+
+    require('lspconfig').pyright.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        root_dir = python_root_dir,
+        settings = {
+            python = {},
+        },
+        flags = {
+            debounce_text_changes = 250,
+        },
     }
-    return util.root_pattern(unpack(root_files))(fname) or util.find_git_ancestor(fname)
 end
 
-require('lspconfig').pyright.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-    root_dir = python_root_dir,
-    settings = {
-        python = {},
-    },
-    flags = {
-        debounce_text_changes = 250,
-    },
-}
-
-local r_config = {
-    on_attach = on_attach,
-    flags = {
-        debounce_text_changes = 300,
-    },
-    capabilities = capabilities,
-    settings = {
-        r = {
-            lsp = {
-                log_file = '~/.cache/nvim/r_lsp_log.log',
-                diagnostics = false, -- r-lsp + lintr is currently problematic
+lsp_configs.r = function()
+    local r_config = {
+        on_attach = on_attach,
+        flags = {
+            debounce_text_changes = 300,
+        },
+        capabilities = capabilities,
+        settings = {
+            r = {
+                lsp = {
+                    log_file = '~/.cache/nvim/r_lsp_log.log',
+                    diagnostics = false, -- r-lsp + lintr is currently problematic
+                },
             },
         },
-    },
-}
+    }
 
-require('lspconfig').r_language_server.setup(r_config)
+    require('lspconfig').r_language_server.setup(r_config)
+end
 
-require('lspconfig').texlab.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-}
+lsp_configs.latex = function()
+    require('lspconfig').texlab.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+    }
+end
 
-require('lspconfig').bashls.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-}
+lsp_configs.bash = function()
+    require('lspconfig').bashls.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+    }
+end
 
-local clangd_capabilities = vim.deepcopy(capabilities)
-clangd_capabilities.offsetEncoding = { 'utf-16' }
+lsp_configs.cpp = function()
+    local clangd_capabilities = vim.deepcopy(capabilities)
+    clangd_capabilities.offsetEncoding = { 'utf-16' }
 
-require('lspconfig').clangd.setup {
-    on_attach = on_attach,
-    capabilities = clangd_capabilities,
-}
+    require('lspconfig').clangd.setup {
+        on_attach = on_attach,
+        capabilities = clangd_capabilities,
+    }
+end
 
-require('neodev').setup {}
+lsp_configs.nvim = function()
+    require('neodev').setup {}
 
-require('lspconfig').sumneko_lua.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-    settings = {
-        Lua = {
-            diagnostics = {
-                globals = { 'vim' },
-            },
-            telemetry = {
-                enable = false,
+    require('lspconfig').sumneko_lua.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        settings = {
+            Lua = {
+                diagnostics = {
+                    globals = { 'vim' },
+                },
+                telemetry = {
+                    enable = false,
+                },
             },
         },
-    },
-}
+    }
+end
 
-require('lspconfig').vimls.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-}
+lsp_configs.vim = function()
+    require('lspconfig').vimls.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+    }
+end
 
-require('lspconfig').sqls.setup {
-    on_attach = function(client, bufnr)
-        vim.cmd.packadd { 'sqls.nvim', bang = true }
+lsp_configs.sql = function()
+    require('lspconfig').sqls.setup {
+        on_attach = function(client, bufnr)
+            vim.cmd.packadd { 'sqls.nvim', bang = true }
 
-        on_attach(client, bufnr)
-        require('sqls').on_attach(client, bufnr)
-        bufmap(bufnr, 'n', '<LocalLeader>ss', '<cmd>SqlsExecuteQuery<CR>', { silent = true })
-        bufmap(bufnr, 'v', '<LocalLeader>ss', '<cmd>SqlsExecuteQuery<CR>', { silent = true })
-        bufmap(bufnr, 'n', '<LocalLeader>sv', '<cmd>SqlsExecuteQueryVertical<CR>', { silent = true })
-        bufmap(bufnr, 'v', '<LocalLeader>sv', '<cmd>SqlsExecuteQueryVertical<CR>', { silent = true })
-    end,
-    capabilities = capabilities,
-    single_file_support = false,
-    on_new_config = function(new_config, new_rootdir)
-        new_config.cmd = {
-            'sqls',
-            '-config',
-            new_rootdir .. '/config.yml',
-        }
-    end,
-}
+            on_attach(client, bufnr)
+            require('sqls').on_attach(client, bufnr)
+            bufmap(bufnr, 'n', '<LocalLeader>ss', '<cmd>SqlsExecuteQuery<CR>', { silent = true })
+            bufmap(bufnr, 'v', '<LocalLeader>ss', '<cmd>SqlsExecuteQuery<CR>', { silent = true })
+            bufmap(bufnr, 'n', '<LocalLeader>sv', '<cmd>SqlsExecuteQueryVertical<CR>', { silent = true })
+            bufmap(bufnr, 'v', '<LocalLeader>sv', '<cmd>SqlsExecuteQueryVertical<CR>', { silent = true })
+        end,
+        capabilities = capabilities,
+        single_file_support = false,
+        on_new_config = function(new_config, new_rootdir)
+            new_config.cmd = {
+                'sqls',
+                '-config',
+                new_rootdir .. '/config.yml',
+            }
+        end,
+    }
+end
+
+lsp_configs.ltex_ls = function()
+    -- referenced from https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/ltex.lua
+    local language_id_mapping = {
+        bib = 'bibtex',
+        plaintex = 'tex',
+        rnoweb = 'sweave',
+        rst = 'restructuredtext',
+        tex = 'latex',
+        xhtml = 'xhtml',
+        rmd = 'markdown',
+    }
+
+    require('lspconfig').ltex.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        filetypes = {
+            'bib',
+            'gitcommit',
+            'markdown',
+            'org',
+            'plaintex',
+            'rst',
+            'rnoweb',
+            'tex',
+            'rmd',
+            'markdown.pandoc',
+        },
+        get_language_id = function(_, filetype)
+            local language_id = language_id_mapping[filetype]
+            if language_id then
+                return language_id
+            else
+                return filetype
+            end
+        end,
+        settings = {
+            ltex = {
+                disabledRules = {
+                    ['en-US'] = { 'DATE_NEW_YEAR', 'UPPERCASE_SENTENCE_START' },
+                    ['zh-CN'] = { 'DATE_NEW_YEAR', 'UPPERCASE_SENTENCE_START' },
+                },
+            },
+        },
+    }
+end
+
+lsp_configs.pinyin = function()
+    require('lspconfig').ds_pinyin_lsp.setup {
+        filetypes = { 'markdown', 'markdown.pandoc', 'rmd' },
+        init_options = {
+            db_path = os.getenv 'HOME' .. '/Downloads/dict.db3',
+            completion_on = false, -- don't enable the completion by default
+        },
+    }
+end
+
+for _, lsp in pairs(enabled_lsps) do
+    lsp_configs[lsp]()
+end
 
 vim.fn.sign_define('DiagnosticSignError', { text = '✗', texthl = 'DiagnosticSignError' })
 vim.fn.sign_define('DiagnosticSignWarn', { text = '!', texthl = 'DiagnosticSignWarn' })
@@ -259,8 +373,10 @@ vim.fn.sign_define('DiagnosticSignHint', { text = '', texthl = 'DiagnosticSig
 
 local command = vim.api.nvim_create_user_command
 
-local has_virtual_text = true
-local has_underline = true
+local has_virtual_text = false
+local has_underline = false
+
+vim.diagnostic.config { virtual_text = has_virtual_text, underline = has_underline }
 
 command('DiagnosticVirtualTextToggle', function()
     has_virtual_text = not has_virtual_text
