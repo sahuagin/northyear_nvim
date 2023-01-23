@@ -75,15 +75,16 @@ require('packer').startup(function(use)
         end,
     }
     use { 'nvim-treesitter/nvim-treesitter-textobjects', opt = true }
-    use { 'p00f/nvim-ts-rainbow', opt = true }
+    use { 'mrjones2014/nvim-ts-rainbow', opt = true }
     use { 'mfussenegger/nvim-treehopper', opt = true }
     use { 'mizlan/iswap.nvim', opt = true }
     use { 'romgrk/nvim-treesitter-context', opt = true }
     use { 'JoosepAlviste/nvim-ts-context-commentstring', opt = true }
 
-    -- Set markdown/rmd syntax highlighting
+    -- Set markdown/rmd/quarto syntax highlighting
     use { 'vim-pandoc/vim-pandoc-syntax', opt = true }
     use { 'vim-pandoc/vim-rmarkdown', branch = 'official-filetype', opt = true }
+    use { 'quarto-dev/quarto-vim', opt = true }
 
     -- Fuzzy finder for file search
     use { 'nvim-lua/plenary.nvim' }
