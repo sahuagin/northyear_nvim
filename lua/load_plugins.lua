@@ -62,9 +62,11 @@ require('packer').startup(function(use)
     use { 'kana/vim-textobj-user' }
     use { 'D4KU/vim-textobj-chainmember', opt = true }
     use { 'thinca/vim-textobj-between', opt = true }
+    use { 'monaqa/dial.nvim', opt = true }
 
     -- text editing tools only for nvim
     use { 'norcalli/nvim-colorizer.lua', opt = true }
+    use { 'folke/todo-comments.nvim', opt = true }
     use { 'windwp/nvim-autopairs', opt = true }
 
     -- Tree sitter for enhanced text obj and syntax capturality
@@ -80,6 +82,7 @@ require('packer').startup(function(use)
     use { 'mizlan/iswap.nvim', opt = true }
     use { 'romgrk/nvim-treesitter-context', opt = true }
     use { 'JoosepAlviste/nvim-ts-context-commentstring', opt = true }
+    use { 'cshuaimin/ssr.nvim', bang = true }
 
     -- Set markdown/rmd/quarto syntax highlighting
     use { 'vim-pandoc/vim-pandoc-syntax', opt = true }
@@ -140,6 +143,7 @@ require('packer').startup(function(use)
     use { 'ludovicchabant/vim-gutentags', opt = true }
     use { 'nvim-orgmode/orgmode', opt = true }
     use { 'lervag/vimtex', opt = true }
+    use { 'jmbuhr/otter.nvim', opt = true }
 
     -- Debugger
     use { 'mfussenegger/nvim-dap', opt = true }

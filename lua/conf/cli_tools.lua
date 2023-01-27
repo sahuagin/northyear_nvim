@@ -49,7 +49,7 @@ end
 M.load.mkdp = function()
     vim.cmd.packadd { 'markdown-preview.nvim', bang = true }
 
-    vim.g.mkdp_filetypes = { 'markdown.pandoc', 'markdown', 'rmd' }
+    vim.g.mkdp_filetypes = { 'markdown.pandoc', 'markdown', 'rmd', 'quarto' }
 
     keymap('n', '<Leader>mmp', '<cmd>MarkdownPreview<cr>', { noremap = true, desc = 'Misc Markdown Preview' })
     keymap('n', '<Leader>mmq', '<cmd>MarkdownPreviewStop<cr>', { noremap = true, desc = 'Misc Markdown Preview Stop' })
@@ -69,6 +69,8 @@ M.load.iron = function()
             repl_definition = {
                 r = radian,
                 rmd = radian,
+                quarto = radian,
+                markdown = radian,
                 python = ipython,
             },
             repl_open_cmd = 'belowright 15 split',
@@ -106,7 +108,7 @@ M.load.iron = function()
 
             if vim.bo.filetype == 'r' or vim.bo.filetype == 'python' then
                 return local_leader .. 'si' .. leader .. 'c'
-            elseif vim.bo.filetype == 'rmd' then
+            elseif vim.bo.filetype == 'rmd' or vim.bo.filetype == 'quarto' or vim.bo.filetype == 'markdown' then
                 return local_leader .. 'sic'
                 -- Note: in an expression mapping, <LocalLeader>
                 -- and <Leader> cannot be automatically mapped
@@ -114,6 +116,16 @@ M.load.iron = function()
             end
         end,
         expr = true,
+    })
+
+    autocmd('FileType', {
+        pattern = { 'quarto', 'markdown' },
+        group = my_augroup,
+        desc = 'set up switching iron repls keymap',
+        callback = function()
+            bufmap(0, 'n', '<LocalLeader>ap', '<cmd>IronAttach python<cr>', { desc = 'switch to python REPL' })
+            bufmap(0, 'n', '<LocalLeader>ar', '<cmd>IronAttach quarto<cr>', { desc = 'switch to R REPL' })
+        end,
     })
 end
 
@@ -183,6 +195,28 @@ M.load.toggleterm = function()
                 current_file = vim.fn.shellescape(current_file)
 
                 local cmd = string.format([[R --quiet -e "quarto::quarto_render(%s)"]], current_file)
+                local term_id = options.args ~= '' and tonumber(options.args) or nil
+
+                ---@diagnostic disable-next-line: missing-parameter
+                require('toggleterm').exec(cmd, term_id)
+                vim.cmd.normal { 'G', bang = true }
+                vim.api.nvim_set_current_win(winid)
+            end, {
+                nargs = '?', -- 0 or 1 arg
+            })
+
+            bufcmd(0, 'PreviewQuarto', function(options)
+                ---@diagnostic disable-next-line: missing-parameter
+                local current_file = vim.fn.expand '%:.' -- relative path to current wd
+                current_file = vim.fn.shellescape(current_file)
+
+                local cmd = string.format(
+                    [[R --quiet -e "n = 0; while (TRUE) if (n == 0) { quarto::quarto_preview(%s); n = 1 }"]],
+                    -- quarto_preview runs async
+                    -- so set up a dead loop to force it keep running in the foreground
+                    -- to prevent R from automatically exiting.
+                    current_file
+                )
                 local term_id = options.args ~= '' and tonumber(options.args) or nil
 
                 ---@diagnostic disable-next-line: missing-parameter
@@ -353,6 +387,8 @@ M.load.nvimr = function()
     vim.g.R_nvim_wd = 1
     vim.g.R_rmdchunk = 0
     vim.g.R_auto_omni = {}
+    vim.g.R_filetypes = { 'r', 'rmd', 'rrst', 'rnoweb', 'rhelp' }
+    -- don't use quarto with nvimr
     -- only manually invoke nvimr's omni completion,
     -- do not auto trigger it
 
@@ -364,7 +400,7 @@ M.load.nvimr = function()
     end
 
     autocmd('FileType', {
-        pattern = { 'r', 'rmd', 'quarto' },
+        pattern = { 'r', 'rmd' },
         group = my_augroup,
         desc = 'set nvim-r keymap',
         callback = function()
@@ -400,17 +436,24 @@ M.load.nvimr = function()
         end,
     })
 
+    vim.cmd.packadd { 'Nvim-R', bang = true }
+end
+
+M.load.quarto = function()
+    vim.cmd.packadd { 'otter.nvim' }
+    vim.cmd.packadd { 'nvim-lspconfig' }
     autocmd('FileType', {
-        pattern = { 'quarto' },
+        pattern = 'quarto',
         group = my_augroup,
-        desc = 'set quarto preview keymap',
+        desc = 'enable multip language support for quarto',
         callback = function()
-            bufmap(0, 'n', '<Localleader>qr', '<Plug>RQuartoRender', opts_desc { 'Quarto Render' })
-            bufmap(0, 'n', '<Localleader>qp', '<Plug>RQuartoPreview', opts_desc { 'Quarto Preview' })
-            bufmap(0, 'n', '<Localleader>qs', '<Plug>RQuartoStop', opts_desc { 'Quarto Stop' })
+            vim.defer_fn(function()
+                require('otter').activate({ 'r', 'python' }, true)
+                -- defer activation, otherwise those hidden buffer
+                -- i.e R, python will not be activated (they are virtual buffer).
+            end, 500)
         end,
     })
-    vim.cmd.packadd { 'Nvim-R', bang = true }
 end
 
 M.load.diffview()
@@ -423,5 +466,6 @@ M.load.pandoc()
 M.load.gutentags()
 M.load.nvimr()
 M.load.vimtex()
+M.load.quarto()
 
 return M

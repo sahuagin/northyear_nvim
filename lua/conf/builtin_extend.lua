@@ -29,7 +29,22 @@ keymap('i', '<C-n>', '<Down>', opts)
 keymap('i', '<C-a>', '<home>', opts)
 keymap('i', '<C-e>', '<end>', opts)
 keymap('i', '<C-h>', '<BS>', opts)
-keymap('i', '<C-k>', '<ESC>d$i', opts)
+keymap('i', '<C-d>', '<Del>', opts)
+keymap('i', '<C-k>', '<C-o>D', opts)
+
+-- cannot use { silent = true } here, the reason is unknown.
+keymap('c', '<C-b>', '<Left>', { noremap = true })
+keymap('c', '<C-p>', '<Up>', { noremap = true })
+keymap('c', '<C-f>', '<Right>', { noremap = true })
+keymap('c', '<C-n>', '<Down>', { noremap = true })
+keymap('c', '<C-a>', '<home>', { noremap = true })
+keymap('c', '<C-e>', '<end>', { noremap = true })
+keymap('c', '<C-h>', '<BS>', { noremap = true })
+keymap('c', '<C-d>', '<Del>', { noremap = true })
+keymap('c', '<C-k>', [[<C-\>e(strpart(getcmdline(), 0, getcmdpos() - 1))<CR>]], { noremap = true })
+-- do the same as <C-k> in insert mode is a bit complex in cmdline mode.
+keymap('c', '<A-b>', '<S-Left>', { noremap = true })
+keymap('c', '<A-f>', '<S-Right>', { noremap = true })
 
 keymap('n', '<Leader>mdc', [[:cd %:h|pwd<cr>]], opts)
 keymap('n', '<Leader>mdu', [[:cd ..|pwd<cr>]], opts)
@@ -165,21 +180,21 @@ function M.textobj_code_chunk(ai, start_pattern, end_pattern, has_same_start_end
 end
 
 autocmd('FileType', {
-    pattern = 'rmd',
+    pattern = { 'rmd', 'quarto' },
     group = M.my_augroup,
     desc = 'set rmarkdown code chunk textobj',
     callback = function()
         local bufmap = vim.api.nvim_buf_set_keymap
         bufmap(0, 'o', 'ac', '', {
             silent = true,
-            desc = 'rmd code chunk text object a',
+            desc = 'rmd/quarto code chunk text object a',
             callback = function()
                 M.textobj_code_chunk('a', '```{.+}', '^```$')
             end,
         })
         bufmap(0, 'o', 'ic', '', {
             silent = true,
-            desc = 'rmd code chunk text object i',
+            desc = 'rmd/quarto code chunk text object i',
             callback = function()
                 M.textobj_code_chunk('i', '```{.+}', '^```$')
             end,
@@ -189,14 +204,14 @@ autocmd('FileType', {
 
         bufmap(0, 'x', 'ac', visual_a, {
             silent = true,
-            desc = 'rmd code chunk text object a',
+            desc = 'rmd/quarto code chunk text object a',
         })
 
         local visual_i = [[:<C-U>lua require('conf.builtin_extend').textobj_code_chunk('i', '```{.+}', '^```$')<CR>]]
 
         bufmap(0, 'x', 'ic', visual_i, {
             silent = true,
-            desc = 'rmd code chunk text object i',
+            desc = 'rmd/quarto code chunk text object i',
         })
     end,
 })
@@ -266,7 +281,8 @@ autocmd('BufEnter', {
 ---
 ---for R, type `colnames(df)` to print names of columns
 ---in REPL, and then type `yap` to yank the whole region
----then switch back to the R file buffer and then call this function
+---then switch back to the R file buffer and then call this function.
+-- Currently, quarto is treated the same as rmarkdown (i.e data frame is treated as R data frame).
 ---
 ---Currently, the names of columns cannot contain special characters and white characters
 ---due to how the processing is handled
@@ -275,7 +291,7 @@ autocmd('BufEnter', {
 ---@param destination string | nil @which tags file will be used to store columns information
 function M.create_tags_for_yanked_columns(df, use_customized_parser, destination)
     local ft = vim.bo.filetype
-    if not (ft == 'r' or ft == 'python' or ft == 'rmd') then
+    if not (ft == 'r' or ft == 'python' or ft == 'rmd' or ft == 'quarto' or ft == 'markdown') then
         return
     end
 
@@ -332,7 +348,7 @@ function M.create_tags_for_yanked_columns(df, use_customized_parser, destination
     -- remove existed entries for the current newtag file
     vim.cmd.write()
 
-    if ft == 'rmd' then
+    if ft == 'rmd' or ft == 'quarto' or ft == 'markdown' then
         ft = 'r'
     end
 
@@ -395,8 +411,8 @@ end, {
 
 autocmd('FileType', {
     group = M.my_augroup,
-    pattern = { 'r', 'rmd' },
-    desc = 'set r, rmd keyword pattern to include .',
+    pattern = { 'r', 'rmd', 'quarto' },
+    desc = 'set r, rmd, and quarto keyword pattern to include .',
     callback = function()
         vim.bo.iskeyword = vim.bo.iskeyword .. ',.'
     end,

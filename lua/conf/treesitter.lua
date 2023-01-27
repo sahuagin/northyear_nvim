@@ -22,6 +22,7 @@ require('nvim-treesitter.configs').setup {
         'regex',
         'latex',
         'org',
+        'markdown',
     },
 
     -- Install languages synchronously (only applied to `ensure_installed`)
@@ -41,7 +42,7 @@ require('nvim-treesitter.configs').setup {
         -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
         -- using this option may slow down your editor, and you may see some duplicate highlights.
         -- Instead of true it can also be a list of languages
-        additional_vim_regex_highlighting = { 'org', 'latex' },
+        additional_vim_regex_highlighting = { 'org', 'latex', 'markdown' },
     },
 
     rainbow = {
@@ -180,6 +181,7 @@ if not vim.g.vscode then
     vim.cmd.packadd { 'nvim-treehopper', bang = true }
     vim.cmd.packadd { 'nvim-treesitter-context', bang = true }
     vim.cmd.packadd { 'iswap.nvim', bang = true }
+    vim.cmd.packadd { 'ssr.nvim', bang = true }
 
     local opts = function(desc)
         return {
@@ -193,6 +195,8 @@ if not vim.g.vscode then
     keymap('v', '<leader>T', ":<C-U>lua require('tsht').nodes()<CR>", opts 'treesitter nodes')
     keymap('n', '<leader>ms', '<cmd>ISwap<cr>', opts 'misc: treesitter swap')
     keymap('n', '<leader>mS', '<cmd>ISwapWith<cr>', opts 'misc: treesitter swapwith')
+    keymap('n', '<leader>mr', [[<cmd>lua require('ssr').open()<cr>]], opts 'misc: treesitter structural replace')
+    keymap('v', '<leader>mr', [[<cmd>lua require('ssr').open()<cr>]], opts 'misc: treesitter structural replace')
 
     require('treesitter-context').setup {
         enable = true,
