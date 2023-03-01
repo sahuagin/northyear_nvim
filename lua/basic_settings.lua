@@ -20,7 +20,6 @@ vim.o.linebreak = true
 vim.o.hidden = true
 vim.o.laststatus = 3
 
-vim.o.clipboard = 'unnamedplus'
 vim.o.completeopt = 'menu,menuone,noselect'
 vim.o.tags = vim.o.tags .. ',.tags_columns'
 
