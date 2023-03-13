@@ -48,7 +48,7 @@ local on_attach = function(client, bufnr)
         bufnr,
         'x',
         '<Leader>la',
-        ':<C-U>lua vim.lsp.buf.range_code_action()<CR>',
+        ':<C-U>lua vim.lsp.buf.code_action()<CR>',
         opts {
             'lsp range code action',
         }
@@ -132,7 +132,36 @@ local on_attach = function(client, bufnr)
             end,
         }
     )
+
+    bufmap(
+        bufnr,
+        'n',
+        '<Leader>lci',
+        '',
+        opts {
+            desc = 'lsp incoming calls',
+            callback = require('telescope.builtin').lsp_incoming_calls,
+        }
+    )
+    bufmap(
+        bufnr,
+        'n',
+        '<Leader>lco',
+        '',
+        opts {
+            desc = 'lsp outgoing calls',
+            callback = require('telescope.builtin').lsp_outgoing_calls,
+        }
+    )
+
     bufmap(bufnr, 'n', '<Leader>lD', '<cmd>Lspsaga peek_definition<CR>', opts { 'lspsaga preview definition' })
+    bufmap(
+        bufnr,
+        'n',
+        '<Leader>lT',
+        '<cmd>Lspsaga peek_type_definition<CR>',
+        opts { 'lspsaga preview type definition' }
+    )
 
     -- workspace
     local bufcmd = vim.api.nvim_buf_create_user_command
@@ -154,7 +183,7 @@ local on_attach = function(client, bufnr)
 
     -- format
     bufmap(bufnr, 'n', '<Leader>lf', '<cmd>lua vim.lsp.buf.format { async = true }<CR>', opts { 'lsp format' })
-    bufmap(bufnr, 'v', '<Leader>lf', ':<C-U>lua vim.lsp.buf.range_formatting()<CR>', opts { 'lsp range format' })
+    bufmap(bufnr, 'v', '<Leader>lf', '<cmd>lua vim.lsp.buf.format { async = true }<CR>', opts { 'lsp range format' })
 
     -- diagnostic
     bufmap(
@@ -182,7 +211,7 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- Copied from lspconfig/server_configurations/pylsp.lua
 
-local enabled_lsps = { 'r', 'python', 'bash', 'cpp', 'vim', 'nvim', 'pinyin', 'ltex_ls', 'sql', 'latex' }
+local enabled_lsps = { 'r', 'python', 'bash', 'cpp', 'vim', 'nvim', 'pinyin', 'ltex_ls', 'sql', 'latex', 'go' }
 
 local lsp_configs = {}
 
@@ -365,6 +394,12 @@ lsp_configs.pinyin = function()
             db_path = os.getenv 'HOME' .. '/Downloads/dict.db3',
             completion_on = false, -- don't enable the completion by default
         },
+    }
+end
+
+lsp_configs.go = function()
+    require('lspconfig').gopls.setup {
+        on_attach = on_attach,
     }
 end
 
