@@ -37,6 +37,7 @@
     + [Terminal emulator keymaps](#terminal-emulator-keymaps)
     + [Git keymaps](#git-keymaps)
     + [Ripgrep keymaps](#ripgrep-keymaps)
+    + [Copilot keymaps](#copilot-keymaps)
   * [REPL keymaps](#repl-keymaps)
   * [Treesitter keymaps](#treesitter-keymaps)
     + [Syntax based text objects keymaps](#syntax-based-text-objects-keymaps)
@@ -282,16 +283,18 @@ to find all keymaps.
 
 ## Builtin miscellenous keymaps
 
-
 | Mode | LHS           | RHS/Functionality                                      |
 |------|---------------|--------------------------------------------------------|
 | n    | `<Leader>olx` | Open URI under cursor using xdg-open                   |
-| n    | `<Leader>olw` | Open URI under cursor using w3m                   |
+| n    | `<Leader>olw` | Open URI under cursor using w3m                        |
 | n    | `<C-g>`       | `<ESC>`                                                |
 | n    | `<Leader>mt`  | search current word from tags file and send to loclist |
 | n    | `<Leader>mdc` | Set working dir as current file's dir                  |
 | n    | `<Leader>mdu` | Set working dir up one level from current working dir  |
 | n    | `<Leader>mc`  | Pick a color scheme                                    |
+| n    | `<Leader>th`  | Toggle highlight serach (see `:h hlsearch`)            |
+| n    | `<Leader>tw`  | Toggle wrap (see `:h wrap`)                            |
+| n    | `<Leader>tc`  | set `conceallevel` between 0 and 2 (see `:h wrap`)     |
 
 ## UI keymaps
 
@@ -444,7 +447,7 @@ The following keymaps rely on [toggleterm.nvim](https://github.com/akinsho/toggl
 
 | Mode | LHS          | RHS/Functionality            |
 |------|--------------|------------------------------|
-| n    | `<Leader>tw` | Toggle the `n`th terminal    |
+| n    | `<Leader>ot` | open the `n`th terminal      |
 | n    | `<Leader>ta` | Toggle all terminals         |
 | n    | `<Leader>te` | Terminate the `n`th terminal |
 | n    | `<Leader>t1` | Toggle the 1st terminal      |
@@ -483,6 +486,18 @@ The following keymaps rely on [nvim-spectre](https://github.com/nvim-pack/nvim-s
 | Mode   | LHS            | RHS/Functionality                                                                                      |
 |--------|----------------|--------------------------------------------------------------------------------------------------------|
 | nv     | `<Leader>fR`   | Open ripgrep search panel (to show searched results of selected text if on visual mode) in the project |
+
+### Copilot keymaps
+
+The following keymaps rely on [copilot.lua](https://github.com/zbirenbaum/copilot.lua)
+
+| Mode | LHS          | RHS/Functionality                     |
+|------|--------------|---------------------------------------|
+| n    | `<Leader>tg` | Toggle auto-suggestion for copilot    |
+| i    | `<M-Y>`      | Accept the whole suggestion           |
+| i    | `<M-y>`      | Accept suggestion of current line     |
+| i    | `<M-[>`      | Show previous suggestion from copilot |
+| i    | `<M-]>`      | Show next suggestion from copilot     |
 
 ## REPL keymaps
 
@@ -561,11 +576,11 @@ The following keymaps rely on [iron.nvim](https://github.com/hkupty/iron.nvim)
 | n    | `[e`         | Go to the start of previous function call       |
 | n    | `[a`         | Go to the start of previous parameter(argument) |
 
-| Mode | LHS          | RHS/Functionality                         |
-|------|--------------|-------------------------------------------|
+| Mode | LHS          | RHS/Functionality                             |
+|------|--------------|-----------------------------------------------|
 | n    | `[F`         | Go to the end of previous function definition |
 | n    | `[<Leader>C` | Go to the end of previous class definition    |
-| n    | `[K`         | The same as `[<Leader>C`                  |
+| n    | `[K`         | The same as `[<Leader>C`                      |
 | n    | `[L`         | Go to the end of previous loop                |
 | n    | `[C`         | Go to the end of previous if-else conditions  |
 | n    | `[E`         | Go to the end of previous function call       |
@@ -648,8 +663,8 @@ The following keymaps rely on [lspsaga.nvim](https://github.com/glepnir/lspsaga.
 
 The following keymaps rely on [lsp_signature.nvim](https://github.com/ray-x/lsp_signature.nvim)
 
-| Mode | LHS    | RHS/Functionality                       |
-|------|--------|-----------------------------------------|
+| Mode | LHS     | RHS/Functionality                       |
+|------|---------|-----------------------------------------|
 | i    | `<A-x>` | Show signature help of current function |
 
 The following keymaps rely on [aerial.nvim](https://github.com/stevearc/aerial.nvim)
