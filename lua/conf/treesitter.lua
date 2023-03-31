@@ -1,5 +1,3 @@
-local keymap = vim.api.nvim_set_keymap
-
 require('nvim-treesitter.configs').setup {
     -- One of "all", "maintained" (parsers with maintainers), or a list of languages
     ensure_installed = {
@@ -39,15 +37,6 @@ require('nvim-treesitter.configs').setup {
         -- using this option may slow down your editor, and you may see some duplicate highlights.
         -- Instead of true it can also be a list of languages
         additional_vim_regex_highlighting = { 'org', 'latex', 'markdown' },
-    },
-
-    rainbow = {
-        enable = not vim.g.vscode,
-        query = {
-            'rainbow-parens',
-            html = 'rainbow-tags',
-            latex = 'rainbow-blocks',
-        },
     },
 
     indent = {
@@ -167,80 +156,3 @@ require('nvim-treesitter.configs').setup {
         },
     },
 }
-
-if not vim.g.vscode then
-    local opts = function(desc)
-        return {
-            silent = true,
-            noremap = true,
-            desc = desc,
-        }
-    end
-
-    keymap('o', '<leader>T', ":<C-U>lua require('tsht').nodes()<CR>", opts 'treesitter nodes')
-    keymap('v', '<leader>T', ":<C-U>lua require('tsht').nodes()<CR>", opts 'treesitter nodes')
-    keymap('n', '<leader>ms', '<cmd>ISwap<cr>', opts 'misc: treesitter swap')
-    keymap('n', '<leader>mS', '<cmd>ISwapWith<cr>', opts 'misc: treesitter swapwith')
-    keymap('n', '<leader>mr', [[<cmd>lua require('ssr').open()<cr>]], opts 'misc: treesitter structural replace')
-    keymap('v', '<leader>mr', [[<cmd>lua require('ssr').open()<cr>]], opts 'misc: treesitter structural replace')
-
-    require('treesitter-context').setup {
-        enable = true,
-        throttle = true,
-    }
-
-    -- NOTE: If you have opened the file via `telescope find_files`,
-    -- Treesitter's fold feature may not work properly. To reactivate it,
-    -- refresh the buffer by using `:e`.
-    vim.o.foldmethod = 'expr'
-    vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
-    -- don't fold any text at startup
-    vim.o.foldlevel = 99
-    vim.o.foldlevelstart = 99
-end
-
-local emmykeymap = require('conf.builtin_extend').emmykeymap
-
-emmykeymap('n', '(ts-incre-selection-init)', '<CR><CR>')
-emmykeymap('n', '(ts-incre-selection-scope-incre)', '<CR>')
-emmykeymap('n', '(ts-incre-selection-node-incre)', '<Tab>')
-emmykeymap('n', '(ts-incre-selection-node-decre)', '<S-Tab>')
-
-emmykeymap('x', '(ts-textobj-function-outer)', 'af')
-emmykeymap('x', '(ts-textobj-class-outer)', 'ak')
-emmykeymap('x', '(ts-textobj-class-outer-alias)', 'aC')
-emmykeymap('x', '(ts-textobj-conditional-outer)', 'ac')
-emmykeymap('x', '(ts-textobj-loop-outer)', 'al')
-emmykeymap('x', '(ts-textobj-argument-outer)', 'a<Leader>a')
-emmykeymap('x', '(ts-textobj-call-outer)', 'ae')
-emmykeymap('x', '(ts-textobj-expression-outer)', 'ae')
-
-emmykeymap('x', '(ts-textobj-tex-frame-outer)', 'a<Leader>lf')
-emmykeymap('x', '(ts-textobj-tex-block-outer)', 'a<Leader>lb')
-emmykeymap('x', '(ts-textobj-tex-statement-outer)', 'a<Leader>ls')
-emmykeymap('x', '(ts-textobj-tex-class-outer)', 'a<Leader>lc')
-
-emmykeymap('n', '(ts-motion-class-prev-start)', '[k')
-emmykeymap('n', '(ts-motion-class-prev-end)', '[K')
-
-emmykeymap('n', '(ts-motion-class-prev-start-alias)', '[<Leader>c')
-emmykeymap('n', '(ts-motion-class-prev-end-alias)', '[<Leader>C')
-
-emmykeymap('n', '(ts-motion-conditional-prev-start)', '[c')
-emmykeymap('n', '(ts-motion-conditional-prev-end)', '[C')
-
-emmykeymap('n', '(ts-motion-argument-prev-start)', '[a')
-emmykeymap('n', '(ts-motion-argument-prev-end)', '[A')
-
-emmykeymap('n', '(ts-motion-tex-block-prev-start)', '[<Leader>lb')
-emmykeymap('n', '(ts-motion-tex-block-prev-end)', '[<Leader>lB')
-emmykeymap('n', '(ts-motion-tex-class-prev-start)', '[<Leader>lc')
-emmykeymap('n', '(ts-motion-tex-class-prev-end)', '[<Leader>lC')
-emmykeymap('n', '(ts-motion-tex-statement-prev-start)', '[<Leader>ls')
-emmykeymap('n', '(ts-motion-tex-statement-prev-end)', '[<Leader>lS')
-emmykeymap('n', '(ts-motion-tex-frame-prev-start)', '[<Leader>lf')
-emmykeymap('n', '(ts-motion-tex-frame-prev-end)', '[<Leader>lF')
-
-emmykeymap('x', '(ts-select-node-with-label)', '<Leader>T')
-emmykeymap('n', '(ts-swap-arguments)', '<Leader>sw')
-emmykeymap('n', '(ts-swap-current-arguments-with)', '<Leader>sW')

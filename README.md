@@ -90,86 +90,20 @@
 
 # Dependencies
 
-You are responsible for installing the dependencies, but most of them are
-optional. They consist mainly of language servers and linters that correspond
-to their respective languages. You can choose the ones you need and leave out
-the others. Even if certain dependencies are absent, neovim will still operate
-and display notifications instead of halting completely.
-
-If your system lacks a proper package manager, such as with Windows, or if the
-packages are out of date, as with Debian, you can use `Mason.nvim`, a neovim
-plugin specifically to install some of the dependencies. Dependencies marked
-with a `*` can be installed through `Mason.nvim`. To install these packages
-within neovim, enter `:Mason` in the prompt, and a popup window will appear
-with the intuitive interface of `Mason`. From there, you can easily install
-packages.
-
-## python deps
-
-1. `python`.
-2. `debugpy`: this module should be included by the `python` at the top of your `$PATH`.
-3. `ipython`
-4. `yapf*`
-5. `flake8*`
-6. `pyright*`
-
-## r deps
-
-1. `r-language-server`: this is a R package that should be installed by the `r` at the top of your `$PATH`
-2. `radian`
-
-## lua deps
-
-1. `lua-language-server*`
-2. `stylua*`
-3. `selene*`
-
-## vimscript deps
-
-1. `vim-language-server*`
-
-## markdown deps
-
-1. `prettierd*`
-2. `vale*`
-
-## sql deps
-
-1. `sqls*`
-2. `sql-formatter*`
-
-## bash deps
-
-1. `bash-language-server*`
-2. `shellcheck*`
-
-## latex deps
-
-1. `texlab*`
-2. `latexindent*`: while this package is shipped with `texlive`, `perl` shipped
-   by macOS cannot run this program, so I use a `homebrew` installed
-   `latexindent` instead.
-
-## cpp deps
-
-1. `clangd*`: Apple's `xcode` command line tools ship this for you.
-
-## general purpose deps
-
-1. `universal-ctags`
+You will need a C compiler in order to build the `treesitter`
+grammar. This can be either `gcc`, `clang`, or `msvc`. To ensure that
+Neovim can find the compiler, make sure it is included in your `PATH`.
 
 # Keymaps
 
-NOTE: this only includes keymaps defined by myself,
-and some of the default plugins keymaps
-that I used frequently.
+NOTE: this only includes keymaps defined by myself, and some of the
+default plugins keymaps that I used frequently.
 
-The `<Leader>` key is `<Space>`,
-the `<LocalLeader>` key is `<Space><Space>` or `<Backslash>`.
+The `<Leader>` key is `<Space>`, the `<LocalLeader>` key is
+`<Space><Space>` or `<Backslash>`.
 
-In case you forget the keymaps
-you can always use `<Leader>fk` (`:Telescope keymaps`)
-to find all keymaps.
+In case you forget the keymaps you can always use `<Leader>fk`
+(`:Telescope keymaps`) to find all keymaps.
 
 ## Builtin keymaps
 

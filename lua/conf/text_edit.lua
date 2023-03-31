@@ -136,10 +136,6 @@ M.load.textobj = function()
     lazy.load { plugins = { 'vim-textobj-user', 'vim-textobj-between', 'vim-textobj-chainmember' } }
 end
 
-M.load.colorizer = function()
-    require('colorizer').setup()
-end
-
 M.load.easy_align = function()
     keymap('x', 'ga', '<Plug>(EasyAlign)', {})
     keymap('n', 'ga', '<Plug>(EasyAlign)', {})
@@ -157,10 +153,6 @@ M.load.mini_block_move = function()
             -- don't enable block move in normal mode
         },
     }
-end
-
-M.load.todo_comments = function()
-    require('todo-comments').setup {}
 end
 
 M.load.dial = function()
@@ -203,12 +195,6 @@ keymap('n', '<Leader>m<space>', '', {
     callback = M.rm_trailing_space,
     desc = 'Misc: remove trailing spaces',
 })
-
-if not vim.g.vscode then
-    M.load.colorizer()
-    M.load.mini_pairs()
-    M.load.todo_comments()
-end
 
 M.load.mini_comment()
 M.load.dsf()
