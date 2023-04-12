@@ -63,7 +63,6 @@ local on_attach = function(client, bufnr)
         opts {
             'lsp hover doc with builtin renderer.',
             function()
-                vim.lsp.handlers['textDocument/hover'] = require('conf.lsp_tools').original_hover_handler
                 vim.lsp.buf.hover()
                 -- after typing gh, within 400 milliseconds typing h will switch into the popup window
                 vim.api.nvim_buf_set_keymap(0, 'n', 'h', '', {
@@ -86,11 +85,8 @@ local on_attach = function(client, bufnr)
         'K',
         '',
         opts {
-            'lsp hover by glow',
-            function()
-                require('conf.lsp_tools').load.glow_hover()
-                vim.lsp.buf.hover()
-            end,
+            'lsp hover',
+            vim.lsp.buf.hover,
         }
     )
 
@@ -172,7 +168,7 @@ local on_attach = function(client, bufnr)
         elseif options.args == 'remove' then
             vim.lsp.buf.remove_workspace_folder()
         elseif options.args == 'show' then
-            vim.pretty_print(vim.lsp.buf.list_workspace_folders())
+            vim.print(vim.lsp.buf.list_workspace_folders())
         end
     end, {
         nargs = 1,
@@ -211,7 +207,7 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- Copied from lspconfig/server_configurations/pylsp.lua
 
-local enabled_lsps = { 'r', 'python', 'bash', 'cpp', 'vim', 'nvim', 'pinyin', 'ltex_ls', 'sql', 'latex', 'go' }
+local enabled_lsps = { 'r', 'python', 'bash', 'cpp', 'vim', 'nvim', 'pinyin', 'sql', 'latex', 'go' }
 
 local lsp_configs = {}
 
@@ -337,53 +333,6 @@ lsp_configs.sql = function()
                 }
             end
         end,
-    }
-end
-
-lsp_configs.ltex_ls = function()
-    -- referenced from https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/ltex.lua
-    local language_id_mapping = {
-        bib = 'bibtex',
-        plaintex = 'tex',
-        rnoweb = 'sweave',
-        rst = 'restructuredtext',
-        tex = 'latex',
-        xhtml = 'xhtml',
-        ['markdown.pandoc'] = 'markdown',
-    }
-
-    require('lspconfig').ltex.setup {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        filetypes = {
-            'bib',
-            'gitcommit',
-            'markdown',
-            'org',
-            'plaintex',
-            'rst',
-            'rnoweb',
-            'tex',
-            'rmd',
-            'markdown.pandoc',
-            'quarto',
-        },
-        get_language_id = function(_, filetype)
-            local language_id = language_id_mapping[filetype]
-            if language_id then
-                return language_id
-            else
-                return filetype
-            end
-        end,
-        settings = {
-            ltex = {
-                disabledRules = {
-                    ['en-US'] = { 'DATE_NEW_YEAR', 'UPPERCASE_SENTENCE_START' },
-                    ['zh-CN'] = { 'DATE_NEW_YEAR', 'UPPERCASE_SENTENCE_START' },
-                },
-            },
-        },
     }
 end
 

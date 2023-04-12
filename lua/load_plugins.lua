@@ -13,8 +13,6 @@ require('packer').init {
 }
 
 require('packer').startup(function(use)
-    -- optimize startup
-    use { 'lewis6991/impatient.nvim' }
     use { 'wbthomason/packer.nvim' }
 
     -- colorschemes
@@ -56,11 +54,8 @@ require('packer').startup(function(use)
     -- text-editing, motions, jumps tools
     use { 'justinmk/vim-sneak' }
     use { 'junegunn/vim-easy-align' }
-    use { 'tpope/vim-surround', opt = true }
-    use { 'numToStr/Comment.nvim', opt = true }
     use { 'tpope/vim-repeat' }
     use { 'michaeljsmith/vim-indent-object' }
-    use { 'wellle/targets.vim', opt = true }
     use { 'AndrewRadev/dsf.vim' }
     use { 'gbprod/substitute.nvim' }
     use { 'andymass/vim-matchup' }
@@ -73,7 +68,6 @@ require('packer').startup(function(use)
     -- text editing tools only for nvim
     use { 'norcalli/nvim-colorizer.lua', opt = true }
     use { 'folke/todo-comments.nvim', opt = true }
-    use { 'windwp/nvim-autopairs', opt = true }
 
     -- Tree sitter for enhanced text obj and syntax capturality
     use {
@@ -83,7 +77,7 @@ require('packer').startup(function(use)
         end,
     }
     use { 'nvim-treesitter/nvim-treesitter-textobjects', opt = true }
-    use { 'mrjones2014/nvim-ts-rainbow', opt = true }
+    use { 'HiPhish/nvim-ts-rainbow2', opt = true }
     use { 'mfussenegger/nvim-treehopper', opt = true }
     use { 'mizlan/iswap.nvim', opt = true }
     use { 'romgrk/nvim-treesitter-context', opt = true }
@@ -137,6 +131,7 @@ require('packer').startup(function(use)
     use { 'jalvesaq/Nvim-R', opt = true }
     use { 'hkupty/iron.nvim', opt = true }
     use { 'akinsho/toggleterm.nvim', opt = true }
+    use { 'goerz/jupytext.vim', opt = true }
 
     -- Git
     use { 'lewis6991/gitsigns.nvim', opt = true }
@@ -145,7 +140,6 @@ require('packer').startup(function(use)
 
     -- Other cli tools, ripgrep, hover, markdown, etc
     use { 'nvim-pack/nvim-spectre', opt = true }
-    use { 'JASONews/glow-hover', opt = true }
     use { 'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', opt = true }
     use { 'ludovicchabant/vim-gutentags', opt = true }
     use { 'nvim-orgmode/orgmode', opt = true }
