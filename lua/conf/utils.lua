@@ -1,10 +1,10 @@
 local M = {}
 
-M.load = {}
+M.config = {}
 local keymap = vim.api.nvim_set_keymap
 local bufmap = vim.api.nvim_buf_set_keymap
 
-M.load.project_nvim = function()
+M.config.project_nvim = function()
     require('project_nvim').setup {
         detection_methods = { 'pattern' },
         patterns = { '.git', '.svn', 'Makefile', 'package.json', 'NAMESPACE', 'setup.py' },
@@ -14,7 +14,7 @@ M.load.project_nvim = function()
     keymap('n', '<Leader>fp', '<cmd>Telescope projects<CR>', { noremap = true })
 end
 
-M.load.nvim_tree = function()
+M.config.nvim_tree = function()
     --
     -- This function has been generated from your
     --   view.mappings.list
@@ -123,14 +123,14 @@ M.load.nvim_tree = function()
     keymap('n', '<leader>er', '<cmd>NvimTreeRefresh<CR>', { noremap = true, silent = true })
 end
 
-M.load.winshift = function()
+M.config.winshift = function()
     require('winshift').setup {}
     local keymap = vim.api.nvim_set_keymap
     keymap('n', '<Leader>wm', '<cmd>WinShift<CR>', { noremap = true, silent = true })
 end
 
-M.load.project_nvim()
-M.load.nvim_tree()
-M.load.winshift()
+M.config.project_nvim()
+M.config.nvim_tree()
+M.config.winshift()
 
 return M

@@ -1,5 +1,5 @@
 local M = {}
-M.load = {}
+M.config = {}
 
 local keymap = vim.api.nvim_set_keymap
 local autocmd = vim.api.nvim_create_autocmd
@@ -248,7 +248,7 @@ end, {
     desc = 'This command deactivates a python venv.',
 })
 
-M.load.pandoc = function()
+M.config.pandoc = function()
     vim.filetype.add {
         extension = {
             md = 'markdown.pandoc',
@@ -264,7 +264,7 @@ M.load.pandoc = function()
     lazy.load { plugins = { 'vim-pandoc-syntax', 'vim-rmarkdown', 'quarto-vim' } }
 end
 
-M.load.vimtex = function()
+M.config.vimtex = function()
     vim.g.vimtex_mappings_enabled = 0
     vim.g.vimtex_imaps_enabled = 0
     vim.g.tex_flavor = 'latex'
@@ -394,7 +394,7 @@ autocmd('FileType', {
     end,
 })
 
-M.load.nvimr = function()
+M.config.nvimr = function()
     vim.g.R_assign = 0
     vim.g.R_app = 'radian'
     vim.g.R_cmd = 'R'
@@ -451,7 +451,7 @@ M.load.nvimr = function()
     })
 end
 
-M.load.quarto = function()
+M.config.quarto = function()
     autocmd('FileType', {
         pattern = 'quarto',
         group = my_augroup,
@@ -466,9 +466,9 @@ M.load.quarto = function()
     })
 end
 
-M.load.vimtex()
-M.load.pandoc()
-M.load.nvimr()
-M.load.quarto()
+M.config.vimtex()
+M.config.pandoc()
+M.config.nvimr()
+M.config.quarto()
 
 return M

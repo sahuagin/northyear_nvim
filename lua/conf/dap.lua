@@ -4,7 +4,10 @@ local my_augroup = require('conf.builtin_extend').my_augroup
 
 local did_load_dap = false
 
-local function load_dap()
+local M = {}
+M.config = {}
+
+function M.config.dap()
     require('dap-python').setup 'python3'
     require('dap-go').setup {}
     local dap = require 'dap'
@@ -117,7 +120,9 @@ autocmd('FileType', {
     callback = function()
         if not did_load_dap then
             did_load_dap = true
-            load_dap()
+            M.config.dap()
         end
     end,
 })
+
+return M

@@ -1,6 +1,6 @@
 local M = {}
 
-M.load = {}
+M.config = {}
 
 local my_augroup = require('conf.builtin_extend').my_augroup
 local autocmd = vim.api.nvim_create_autocmd
@@ -8,11 +8,11 @@ local keymap = vim.api.nvim_set_keymap
 
 local lazy = require 'lazy'
 
-M.load.mini_pairs = function()
+M.config.mini_pairs = function()
     require('mini.pairs').setup {}
 end
 
-M.load.mini_comment = function()
+M.config.mini_comment = function()
     require('mini.comment').setup {
         hooks = {
             pre = function()
@@ -22,7 +22,7 @@ M.load.mini_comment = function()
     }
 end
 
-M.load.dsf = function()
+M.config.dsf = function()
     autocmd('FileType', {
         group = my_augroup,
         pattern = { 'rmd', 'quarto' },
@@ -46,7 +46,7 @@ M.load.dsf = function()
     lazy.load { plugins = { 'dsf.vim' } }
 end
 
-M.load.matchup = function()
+M.config.matchup = function()
     -- don't need this binding
     keymap('n', '%', '<plug>(matchup-z%)', {})
     keymap('o', '%', '<plug>(matchup-z%)', {})
@@ -55,7 +55,7 @@ M.load.matchup = function()
     lazy.load { plugins = { 'vim-matchup' } }
 end
 
-M.load.sneak = function()
+M.config.sneak = function()
     vim.g['sneak#label'] = 1
 
     vim.g['sneak#use_ic_scs'] = 1
@@ -68,7 +68,7 @@ M.load.sneak = function()
     lazy.load { plugins = { 'vim-sneak' } }
 end
 
-M.load.mini_ai = function()
+M.config.mini_ai = function()
     require('mini.ai').setup {
         search_method = 'cover',
         mappings = {
@@ -85,7 +85,7 @@ M.load.mini_ai = function()
     }
 end
 
-M.load.mini_surround = function()
+M.config.mini_surround = function()
     require('mini.surround').setup {
         mappings = {
             add = '<Plug>(mini-surround-add)',
@@ -106,7 +106,7 @@ M.load.mini_surround = function()
     keymap('n', 'ds', '<Plug>(mini-surround-delete)', {})
 end
 
-M.load.substitute = function()
+M.config.substitute = function()
     require('substitute').setup {}
 
     keymap('n', 'gs', "<cmd>lua require('substitute').operator()<cr>", { noremap = true })
@@ -115,7 +115,7 @@ M.load.substitute = function()
     keymap('x', 'gs', "<cmd>lua require('substitute').visual()<cr>", { noremap = true })
 end
 
-M.load.textobj = function()
+M.config.textobj = function()
     vim.g.textobj_between_no_default_key_mappings = 1
     vim.g.textobj_chainmember_no_default_key_mappings = 1
 
@@ -132,18 +132,18 @@ M.load.textobj = function()
     lazy.load { plugins = { 'vim-textobj-user', 'vim-textobj-between', 'vim-textobj-chainmember' } }
 end
 
-M.load.colorizer = function()
+M.config.colorizer = function()
     require('colorizer').setup()
 end
 
-M.load.easy_align = function()
+M.config.easy_align = function()
     keymap('x', 'ga', '<Plug>(EasyAlign)', {})
     keymap('n', 'ga', '<Plug>(EasyAlign)', {})
 
     lazy.load { plugins = { 'vim-easy-align' } }
 end
 
-M.load.mini_block_move = function()
+M.config.mini_block_move = function()
     require('mini.move').setup {
         mappings = {
             line_left = '',
@@ -155,11 +155,11 @@ M.load.mini_block_move = function()
     }
 end
 
-M.load.todo_comments = function()
+M.config.todo_comments = function()
     require('todo-comments').setup {}
 end
 
-M.load.dial = function()
+M.config.dial = function()
     local augend = require 'dial.augend'
     local universal = {
         augend.integer.alias.decimal_int, -- nonnegative decimal number (0, 1, 2, 3, ...)
@@ -200,20 +200,20 @@ keymap('n', '<Leader>m<space>', '', {
     desc = 'Misc: remove trailing spaces',
 })
 
-M.load.colorizer()
-M.load.mini_pairs()
-M.load.todo_comments()
+M.config.colorizer()
+M.config.mini_pairs()
+M.config.todo_comments()
 
-M.load.mini_comment()
-M.load.dsf()
-M.load.matchup()
-M.load.sneak()
-M.load.substitute()
-M.load.mini_ai()
-M.load.textobj()
-M.load.mini_surround()
-M.load.easy_align()
-M.load.mini_block_move()
-M.load.dial()
+M.config.mini_comment()
+M.config.dsf()
+M.config.matchup()
+M.config.sneak()
+M.config.substitute()
+M.config.mini_ai()
+M.config.textobj()
+M.config.mini_surround()
+M.config.easy_align()
+M.config.mini_block_move()
+M.config.dial()
 
 return M

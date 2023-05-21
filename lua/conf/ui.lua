@@ -1,11 +1,11 @@
 local M = {}
-M.load = {}
+M.config = {}
 
 local autocmd = vim.api.nvim_create_autocmd
 local my_augroup = require('conf.builtin_extend').my_augroup
 local set_hl = vim.api.nvim_set_hl
 
-M.load.lualine = function()
+M.config.lualine = function()
     -- Override 'encoding': Don't display if encoding is UTF-8.
     local encoding = function()
         local ret, _ = (vim.bo.fenc or vim.go.enc):gsub('^utf%-8$', '')
@@ -261,7 +261,7 @@ M.get_workspace_diff = function()
     end
 end
 
-M.load.notify = function()
+M.config.notify = function()
     vim.notify = require 'notify'
 
     require('notify').setup {
@@ -274,11 +274,11 @@ M.load.notify = function()
     keymap('n', '<leader>fn', '<cmd>Telescope notify<cr>', opts)
 end
 
-M.load.devicons = function()
+M.config.devicons = function()
     require('nvim-web-devicons').setup()
 end
 
-M.load.trouble = function()
+M.config.trouble = function()
     require('trouble').setup {
         mode = 'quickfix',
         action_keys = {
@@ -312,7 +312,7 @@ M.load.trouble = function()
     keymap('n', '<leader>xr', '<cmd>TroubleToggle lsp_references<cr>', opts)
 end
 
-M.load.which_key = function()
+M.config.which_key = function()
     local which_key = require 'which-key'
     which_key.setup {
         triggers = { '<leader>', '<localleader>', 'g', 'z', ']', '[', '`', '"', [[']], '@' },
@@ -394,7 +394,7 @@ M.load.which_key = function()
     })
 end
 
-M.load.indent_blankline = function()
+M.config.indent_blankline = function()
     require('indent_blankline').setup {
         char = '┆',
         context_char = '┆',
@@ -447,12 +447,12 @@ M.reopen_qflist_by_trouble = function()
     require('trouble').toggle 'quickfix'
 end
 
-M.load.devicons()
-M.load.lualine()
-M.load.notify()
-M.load.trouble()
-M.load.which_key()
-M.load.indent_blankline()
+M.config.devicons()
+M.config.lualine()
+M.config.notify()
+M.config.trouble()
+M.config.which_key()
+M.config.indent_blankline()
 M.set_git_workspace_diff()
 
 return M

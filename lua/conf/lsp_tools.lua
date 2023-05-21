@@ -1,10 +1,10 @@
 local M = {}
-M.load = {}
+M.config = {}
 local bufmap = vim.api.nvim_buf_set_keymap
 local autocmd = vim.api.nvim_create_autocmd
 local my_augroup = require('conf.builtin_extend').my_augroup
 
-M.load.lspkind = function()
+M.config.lspkind = function()
     require('lspkind').init {
         mode = 'symbol_text',
         symbol_map = {
@@ -21,7 +21,7 @@ M.load.lspkind = function()
     }
 end
 
-M.load.signature = function()
+M.config.signature = function()
     autocmd('LspAttach', {
         group = my_augroup,
         desc = 'Attach signature',
@@ -49,7 +49,7 @@ M.load.signature = function()
     })
 end
 
-M.load.aerial = function()
+M.config.aerial = function()
     require('aerial').setup {
         backends = { 'lsp', 'treesitter', 'markdown' },
         close_automatic_events = { 'unsupported' },
@@ -58,7 +58,7 @@ M.load.aerial = function()
     }
 end
 
-M.load.lspsaga = function()
+M.config.lspsaga = function()
     local saga = require 'lspsaga'
     saga.setup {
         lightbulb = {
@@ -97,7 +97,7 @@ M.load.lspsaga = function()
     }
 end
 
-M.load.refactor = function()
+M.config.refactor = function()
     autocmd('FileType', {
         pattern = { 'go', 'python', 'lua' },
         once = true,
@@ -116,7 +116,7 @@ M.load.refactor = function()
     })
 end
 
-M.load.nullls = function()
+M.config.nullls = function()
     local null_ls = require 'null-ls'
     local util = require 'null-ls.utils'
     local helper = require 'null-ls.helpers'
@@ -177,11 +177,11 @@ M.load.nullls = function()
     }
 end
 
-M.load.aerial()
-M.load.lspkind()
-M.load.lspsaga()
-M.load.refactor()
-M.load.nullls()
-M.load.signature()
+M.config.aerial()
+M.config.lspkind()
+M.config.lspsaga()
+M.config.refactor()
+M.config.nullls()
+M.config.signature()
 
 return M

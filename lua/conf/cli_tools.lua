@@ -1,5 +1,5 @@
 local M = {}
-M.load = {}
+M.config = {}
 
 local keymap = vim.api.nvim_set_keymap
 local autocmd = vim.api.nvim_create_autocmd
@@ -9,7 +9,7 @@ local bufmap = vim.api.nvim_buf_set_keymap
 
 local lazy = require 'lazy'
 
-M.load.gitsigns = function()
+M.config.gitsigns = function()
     require('gitsigns').setup {
         current_line_blame = true,
         current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
@@ -23,16 +23,16 @@ M.load.gitsigns = function()
     keymap('n', '[h', '<cmd>Gitsigns prev_hunk<CR>', { noremap = true })
 end
 
-M.load.neogit = function()
+M.config.neogit = function()
     keymap('n', '<Leader>gg', '<cmd>Neogit<CR>', { noremap = true, desc = 'Neogit' })
 end
 
-M.load.diffview = function()
+M.config.diffview = function()
     keymap('n', '<Leader>gd', '<cmd>DiffviewOpen<CR>', { noremap = true })
     keymap('n', '<Leader>gf', '<cmd>DiffviewFileHistory<CR>', { noremap = true })
 end
 
-M.load.spectre = function()
+M.config.spectre = function()
     require('spectre').setup()
 
     keymap('n', '<Leader>fR', "<cmd>lua require('spectre').open()<CR>", { noremap = true, desc = 'rg at side panel' })
@@ -44,7 +44,7 @@ M.load.spectre = function()
     )
 end
 
-M.load.mkdp = function()
+M.config.mkdp = function()
     vim.g.mkdp_filetypes = { 'markdown.pandoc', 'markdown', 'rmd', 'quarto' }
 
     keymap('n', '<Leader>mmp', '<cmd>MarkdownPreview<cr>', { noremap = true, desc = 'Misc Markdown Preview' })
@@ -53,7 +53,7 @@ M.load.mkdp = function()
     lazy.load { plugins = { 'markdown-preview.nvim' } }
 end
 
-M.load.iron = function()
+M.config.iron = function()
     local iron = require 'iron.core'
 
     local radian = require('iron.fts.r').radian
@@ -128,7 +128,7 @@ M.load.iron = function()
     })
 end
 
-M.load.toggleterm = function()
+M.config.toggleterm = function()
     require('toggleterm').setup {
         -- size can be a number or function which is passed the current terminal
         size = function(term)
@@ -220,7 +220,7 @@ M.load.toggleterm = function()
     })
 end
 
-M.load.gutentags = function()
+M.config.gutentags = function()
     vim.g.gutentags_add_ctrlp_root_markers = 0
     vim.g.gutentags_ctags_exclude = { '.*', '**/.*' }
     vim.g.gutentags_generate_on_new = 0
@@ -236,7 +236,7 @@ M.load.gutentags = function()
     lazy.load { plugins = { 'vim-gutentags' } }
 end
 
-M.load.copilot = function()
+M.config.copilot = function()
     autocmd('InsertEnter', {
         group = my_augroup,
         once = true,
@@ -274,7 +274,7 @@ M.load.copilot = function()
     })
 end
 
-M.load.jupytext = function()
+M.config.jupytext = function()
     vim.g.jupytext_enabled = 1
     -- the jupytext_fmt is not flexible enough to support fetch the format
     -- dynamically for example if you want to use jupytext for both python and
@@ -288,20 +288,20 @@ M.load.jupytext = function()
     lazy.load { plugins = { 'jupytext.vim' } }
 end
 
-M.load.mason = function()
+M.config.mason = function()
     require('mason').setup {}
 end
 
-M.load.diffview()
-M.load.gitsigns()
-M.load.iron()
-M.load.mkdp()
-M.load.neogit()
-M.load.spectre()
-M.load.toggleterm()
-M.load.gutentags()
-M.load.copilot()
-M.load.jupytext()
-M.load.mason()
+M.config.diffview()
+M.config.gitsigns()
+M.config.iron()
+M.config.mkdp()
+M.config.neogit()
+M.config.spectre()
+M.config.toggleterm()
+M.config.gutentags()
+M.config.copilot()
+M.config.jupytext()
+M.config.mason()
 
 return M
