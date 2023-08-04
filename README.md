@@ -88,6 +88,67 @@
   embedded seamlessly in vscode, allowing for a smooth and uninterrupted
   workflow.
 
+**NOTE**: If you plan to use this configuration with `vscode-neovim`, please
+use the `windows/vscode` branch. If you wish to use neovim both in the terminal
+and in vscode, we suggest creating two folders in `~/.config` or your specified
+`$XDG_CONFIG` path. One is `~/.config/nvim`, which uses the default
+configuration in the `master` branch, and the other is
+`~/.config/vscode-neovim`, which uses the configuration in the `windows/vscode`
+branch. This takes advantage of the `NVIM_APPNAME` feature in `nvim 0.9`. There
+are two ways to ask `vscode-neovim` to use the configuration from the
+`~/.config/vscode-neovim` folder as opposed to the default folder:
+
+1. Create a bash script like the following:
+
+```bash
+#!bin/bash
+NVIM_APPNAME=vscode-neovim nvim "$@"
+```
+
+Then, in vscode, set `vscode-neovim.neovimExecutablePaths.darwin` to
+`your_path/to_the/bash_script`, changing darwin to match your system.
+
+2. set `vscode-neovim.NVIM_APPNAME` to `vscode-neovim` in vscode settings.
+
+## Be Wild
+
+Randomly select a theme from a curated list each time you start up and
+automatically switches between day and night themes at scheduled time.
+Additionally, the displayed verses on the welcome screen is also randomized with
+each launch. With neovim, you can have a fresh experience every time. Be casual
+and wild!
+
+# Showcase
+
+![welcome-screen](assets/welcome-screen.png)
+
+- The welcome screen displays two verses randomly selected from my curated
+  collection. You can select new verses and color schemes at random or access
+  frequently used commands from this screen.
+
+![lsp](./assets/lsp-ctags.png)
+
+- This screenshot showcases writing Lua code with smart autocompletion through
+  both language server (LSP) and universal-ctags (ctags). This combination
+  seamlessly blends old-school and modern tools. The bottom window shows the
+  occurrence of referenced symbols that you specify (via `lsp find
+  references`), while the right window shows the symbol outline of the current
+  file (via `lsp document symbols`).
+
+![literate-programming](./assets/literate-programming.png)
+
+- This screenshot demonstrates the use of literate programming in neovim, which
+  is highly beneficial for data science workflows. You can write code in both
+  Python and R with intelligent autocompletion from both LSP and Ctags in quarto
+  or markdown files. Moreover, you can send your code to both R and Python REPL
+  simultaneously.
+
+![dap](./assets/dap-python.png)
+
+- This screenshot demonstrates how to debug Python program in neovim. Stepping through
+  the code and watching variables and stack frames, just like in vscode.
+>>>>>>> master
+
 # Dependencies
 
 You will need a C compiler in order to build the `treesitter`
@@ -234,6 +295,7 @@ In case you forget the keymaps you can always use `<Leader>fk`
 | n    | `<Leader>mdu` | Set working dir up one level from current working dir  |
 | n    | `<Leader>mc`  | Pick a color scheme                                    |
 | n    | `<Leader>th`  | Toggle highlight serach (see `:h hlsearch`)            |
+| n    | `<Leader>tH`  | Toggle cmdheight between 0 or 1 (see `:h cmdheight`)   |
 | n    | `<Leader>tw`  | Toggle wrap (see `:h wrap`)                            |
 | n    | `<Leader>tc`  | set `conceallevel` between 0 and 2 (see `:h wrap`)     |
 
@@ -380,92 +442,6 @@ The following keymaps rely on [vim-textobj-chainmember](https://github.com/D4KU/
 | ov   | a.  | Text object: around a chain of chained method calls   |
 | ov   | i.  | Text object: inner of a chain of chained method calls |
 
-## Integration with other tools
-
-### Terminal emulator keymaps
-
-The following keymaps rely on [toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim)
-
-| Mode | LHS          | RHS/Functionality            |
-| ---- | ------------ | ---------------------------- |
-| n    | `<Leader>ot` | open the `n`th terminal      |
-| n    | `<Leader>ta` | Toggle all terminals         |
-| n    | `<Leader>te` | Terminate the `n`th terminal |
-| n    | `<Leader>t1` | Toggle the 1st terminal      |
-| n    | `<Leader>t2` | Toggle the 2nd terminal      |
-| n    | `<Leader>t3` | Toggle the 3rd terminal      |
-| n    | `<Leader>t4` | Toggle the 4th terminal      |
-
-### Git keymaps
-
-The following keymaps rely on [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
-
-| Mode | LHS          | RHS/Functionality             |
-| ---- | ------------ | ----------------------------- |
-| n    | `<Leader>gp` | Preview current git diff hunk |
-| n    | `<Leader>gs` | Stage current git diff hunk   |
-| n    | `<Leader>gr` | Reset current git diff hunk   |
-| n    | `<Leader>gq` | Send git diff hunks to qflist |
-| n    | `]h`         | Go to next git diff hunk      |
-| n    | `[h`         | Go to previous git diff hunk  |
-
-The following keymaps rely on [neogit](https://github.com/TimUntersberger/neogit)
-
-| Mode | LHS          | RHS/Functionality         |
-| ---- | ------------ | ------------------------- |
-| n    | `<Leader>gg` | Open Neogit git dashboard |
-
-The following keymaps rely on [diffview.nvim](https://github.com/sindrets/diffview.nvim)
-
-| Mode | LHS          | RHS/Functionality                           |
-| ---- | ------------ | ------------------------------------------- |
-| n    | `<Leader>gd` | Compare git diff for current file with HEAD |
-| n    | `<Leader>gf` | Open git diff view for commits history      |
-
-### Ripgrep keymaps
-
-The following keymaps rely on [nvim-spectre](https://github.com/nvim-pack/nvim-spectre)
-
-| Mode | LHS          | RHS/Functionality                                                                                      |
-| ---- | ------------ | ------------------------------------------------------------------------------------------------------ |
-| nv   | `<Leader>fR` | Open ripgrep search panel (to show searched results of selected text if on visual mode) in the project |
-
-### Copilot keymaps
-
-The following keymaps rely on [copilot.lua](https://github.com/zbirenbaum/copilot.lua)
-
-| Mode | LHS          | RHS/Functionality                     |
-| ---- | ------------ | ------------------------------------- |
-| n    | `<Leader>tg` | Toggle auto-suggestion for copilot    |
-| i    | `<M-Y>`      | Accept the whole suggestion           |
-| i    | `<M-y>`      | Accept suggestion of current line     |
-| i    | `<M-[>`      | Show previous suggestion from copilot |
-| i    | `<M-]>`      | Show next suggestion from copilot     |
-
-## REPL keymaps
-
-The following keymaps rely on [iron.nvim](https://github.com/hkupty/iron.nvim)
-
-| Mode | LHS               | RHS/Functionality                       |
-| ---- | ----------------- | --------------------------------------- |
-| n    | `<LocalLeader>rs` | Start the REPL                          |
-| n    | `<LocalLeader>rr` | Restart the REPL                        |
-| n    | `<LocalLeader>rh` | Hide the REPL window                    |
-| n    | `<LocalLeader>rf` | Focus / open on the REPL window         |
-| n    | `<LocalLeader>rw` | Send file content to REPL after writing |
-| n    | `<LocalLeader>ra` | Attach current file to a specific REPL  |
-| n    | `<LocalLeader>ri` | Interrupt the REPL                      |
-| n    | `<LocalLeader>rq` | Exit the REPL                           |
-| n    | `<LocalLeader>rc` | Clear the REPL output                   |
-
-| Mode | LHS                  | RHS/Functionality                                     |
-| ---- | -------------------- | ----------------------------------------------------- |
-| nv   | `<LocalLeader>s`     | Send the motion / text object / selected text to REPL |
-| n    | `<LocalLeader>sf`    | Send the file to REPL                                 |
-| n    | `<LocalLeader>ss`    | Send current line to REPL                             |
-| n    | `<LocalLeader>sm`    | Send mark to REPL                                     |
-| n    | `<LocalLeader>s<cr>` | Send `<cr>` to REPL                                   |
-
 ## Treesitter keymaps
 
 ### Syntax based text objects keymaps
@@ -529,138 +505,6 @@ The following keymaps rely on [iron.nvim](https://github.com/hkupty/iron.nvim)
 | n    | `[E`         | Go to the end of previous function call       |
 | n    | `[A`         | Go to the end of previous parameter(argument) |
 
-### Miscellenous
-
-| Mode | LHS          | RHS/Functionality                                                     |
-| ---- | ------------ | --------------------------------------------------------------------- |
-| n    | `<Leader>ms` | Swap two selected treesitter nodes                                    |
-| n    | `<Leader>mS` | Swap current node with selected treesitter node                       |
-| n    | `<CR><CR>`   | Start incremental selection (expand region) based on treesitter nodes |
-| v    | `<CR>`       | Expand the region based on scope                                      |
-| v    | `<Tab>`      | Expand the region based on treesitter node                            |
-| v    | `<S-Tab>`    | Shrink the region based on treesitter node                            |
-
-## Searcher keymaps
-
-The following keymaps rely on
-
-[telescope.nvim](https://github.com/nvim-telescope/telescope.nvim),
-[nvim-notify](https://github.com/rcarriga/nvim-notify),
-[project.nvim](https://github.com/ahmedkhalf/project.nvim)
-
-| Mode | LHS          | RHS/Functionality                    |
-| ---- | ------------ | ------------------------------------ |
-| n    | `<Leader>ff` | Preview files in current working dir |
-| n    | `<Leader>fg` | Search current working dir via grep  |
-| n    | `<Leader>fb` | Preview buffers                      |
-| n    | `<Leader>fh` | Preview vimhelp                      |
-| n    | `<Leader>fo` | Preview recently visited (old) files |
-| n    | `<Leader>fp` | Show recently visited projects       |
-| n    | `<Leader>fk` | Show keymaps                         |
-| n    | `<Leader>fc` | Show commands                        |
-| n    | `<A-x>`      | Show commands                        |
-| n    | `<Leader>fC` | Show command history                 |
-| n    | `<Leader>fs` | Show lsp document symbols            |
-| n    | `<Leader>fr` | Show registers                       |
-| n    | `<Leader>fj` | Show jumplist                        |
-| n    | `<Leader>fn` | Show notifications                   |
-| n    | `<Leader>fT` | Show treesitter nodes                |
-| n    | `<Leader>ft` | Show tags                            |
-| n    | `<Leader>F`  | Show all available telescope finders |
-| n    | `<Leader>fe` | The same as `<Leader>F`              |
-
-## Language Server Protocol keymaps
-
-The following keymaps rely on [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
-
-| Mode | LHS          | RHS/Functionality                           |
-| ---- | ------------ | ------------------------------------------- |
-| n    | `<Leader>lt` | Go to current symbol's type definition      |
-| n    | `<Leader>la` | LSP code actions                            |
-| n    | `<Leader>ls` | Show signature help                         |
-| n    | `<Leader>lf` | Format document                             |
-| n    | `K`          | Hover (Show doc of symbol under the cursor) |
-
-The following keymaps rely on [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-
-| Mode | LHS          | RHS/Functionality                      |
-| ---- | ------------ | -------------------------------------- |
-| n    | `gr`         | Show references of current symbol      |
-| n    | `gd`         | Show definitions of current symbol     |
-| n    | `<Leader>li` | Show implementations of current symbol |
-| n    | `<Leader>ld` | Show diagnostics of current project    |
-
-The following keymaps rely on [lspsaga.nvim](https://github.com/glepnir/lspsaga.nvim)
-
-| Mode | LHS          | RHS/Functionality                            |
-| ---- | ------------ | -------------------------------------------- |
-| n    | `<Leader>lD` | Preview definition of current symbol         |
-| n    | `<Leader>lF` | A fancy previewer (finder) of current symbol |
-| n    | `<Leader>ln` | Rename current symbol                        |
-| n    | `<Leader>ll` | Show details of diagnostics in current line  |
-| n    | `gh`         | Hover (show documentation of) current symbol |
-| n    | `[d`         | Go to previous diagnostics location          |
-| n    | `]d`         | Go to previous diagnostics location          |
-| `i`  | `<C-b`       | Scoll up the hover window (documentation)    |
-| `i`  | `<C-f`       | Scoll down the hover window (documentation)  |
-
-The following keymaps rely on [lsp_signature.nvim](https://github.com/ray-x/lsp_signature.nvim)
-
-| Mode | LHS     | RHS/Functionality                       |
-| ---- | ------- | --------------------------------------- |
-| i    | `<A-x>` | Show signature help of current function |
-
-The following keymaps rely on [aerial.nvim](https://github.com/stevearc/aerial.nvim)
-
-| Mode | LHS          | RHS/Functionality                      |
-| ---- | ------------ | -------------------------------------- |
-| n    | `<Leader>lo` | Toggle the outline of document symbols |
-
-## Autocompletion keymaps
-
-The following keymaps rely on [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
-
-| Mode | LHS         | RHS/Functionality                                                      |
-| ---- | ----------- | ---------------------------------------------------------------------- |
-| `i`  | `<C-b>`     | Scoll up the documentation                                             |
-| `i`  | `<C-f>`     | Scoll down the documentation                                           |
-| `i`  | `<C-n>`     | Select next candidate                                                  |
-| `i`  | `<C-p>`     | Select previous candidate                                              |
-| `i`  | `<A-Space>` | Manually invoke the completion                                         |
-| `i`  | `<CR>`      | Select the candidate and complete the completion                       |
-| `i`  | `<Tab>`     | Select the candidate / expand the snippet / go to next slot in snippet |
-| `i`  | `<S-Tab>`   | Select previous candidate / go to previous slot in snippet             |
-| `i`  | `<ESC>`     | Abort the completion                                                   |
-
-## Debugger Adapter Protocol keymaps
-
-| Mode | LHS          | RHS/Functionality                            |
-| ---- | ------------ | -------------------------------------------- |
-| `n`  | `<F5>`       | Continue                                     |
-| `n`  | `<F6>`       | Pause                                        |
-| `n`  | `<S-F5>`     | Close                                        |
-| `n`  | `<F8>`       | Run to cursor                                |
-| `n`  | `<F9>`       | Toggle break point                           |
-| `n`  | `<S-F9>`     | Set conditional breakpoint                   |
-| `n`  | `<F10>`      | Step over                                    |
-| `n`  | `<F11>`      | Step into                                    |
-| `n`  | `<S-F11>`    | Step out                                     |
-| n    | `<Leader>dh` | Hover the DAP information for current symbol |
-| n    | `<Leader>dr` | Toggle the REPL of the DAP session           |
-| n    | `<Leader>du` | Toggle the fancy UI (side panel) of DAP      |
-| n    | `<Leader>dc` | Show available DAP commands                  |
-| n    | `<Leader>dC` | Show available DAP configurations            |
-| n    | `<Leader>db` | List breakpoints                             |
-| n    | `<Leader>dv` | List DAP variables                           |
-| n    | `<Leader>df` | List DAP frames                              |
-
-## orgmode keymaps
-
-| Mode | LHS          | RHS/Functionality |
-| ---- | ------------ | ----------------- |
-| n    | `<Leader>oa` | Open org agenda   |
-| n    | `<Leader>oc` | Open org capture  |
-
 ## Filetype Specific Keymaps
 
 ### R keymaps
@@ -672,46 +516,6 @@ The following keymaps rely on [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 | ov   | `a<Leader>c` | Text objects: a code chunk     |
 | ov   | `i<Leader>c` | Text objects: inner code chunk |
 
-#### REPL keymaps for R
-
-The following keymaps rely on [Nvim-R](https://github.com/jalvesaq/Nvim-R)
-
-| Mode | LHS               | RHS/Functionality           |
-| ---- | ----------------- | --------------------------- |
-| n    | `<LocalLeader>rs` | Start the R REPL            |
-| n    | `<LocalLeader>rq` | Stop the R REPL             |
-| n    | `<LocalLeader>rc` | Clear the R console content |
-
-| Mode | LHS               | RHS/Functionality                                    |
-| ---- | ----------------- | ---------------------------------------------------- |
-| n    | `<LocalLeader>ss` | Send current line to console                         |
-| n    | `<LocalLeader>sf` | Send whole file to console                           |
-| n    | `<LocalLeader>sm` | Send marked block to console                         |
-| nv   | `<LocalLeader>s`  | Send motion / text object / selected text to console |
-| nv   | `<LocalLeader>sc` | Send code chunk to console                           |
-
-| Mode | LHS               | RHS/Functionality                              |
-| ---- | ----------------- | ---------------------------------------------- |
-| n    | `<LocalLeader>oo` | Toggle the outline view of workspace variables |
-| n    | `<LocalLeader>or` | Expand all variables in the outline view       |
-| n    | `<LocalLeader>om` | Collapse all variables in the outline view     |
-| n    | `<LocalLeader>oh` | Show help of symbol under cursor               |
-| n    | `<LocalLeader>oh` | Call `print()` for symbol under cursor         |
-| n    | `<LocalLeader>os` | Call `str()` for symbol under cursor           |
-| n    | `<LocalLeader>oS` | Call `summary()` for symbol under cursor       |
-| n    | `<LocalLeader>on` | Call `names()` for symbol under cursor         |
-
-| Mode | LHS               | RHS/Functionality                                |
-| ---- | ----------------- | ------------------------------------------------ |
-| n    | `<LocalLeader>dt` | View the data frame in a new tab                 |
-| n    | `<LocalLeader>ds` | View the data frame in a horizontal split window |
-| n    | `<LocalLeader>dv` | View the data frame in a vertical split window   |
-| n    | `<LocalLeader>dh` | View the `head()` of a data frame                |
-
-| Mode | LHS          | RHS/Functionality                                                                                                              |
-| ---- | ------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| i    | `<C-x><C-o>` | Manually invoke the completion from `Nvim-R` (useful for completing column names), see details in the [5th note](#other-notes) |
-
 ### Python keymaps
 
 #### Builtin keymaps for Python
@@ -720,14 +524,6 @@ The following keymaps rely on [Nvim-R](https://github.com/jalvesaq/Nvim-R)
 | ---- | ------------ | ------------------------------ |
 | ov   | `a<Leader>c` | Text objects: a code chunk     |
 | ov   | `i<Leader>c` | Text objects: inner code chunk |
-
-### REPL keymaps for Python
-
-The following keymaps rely on [iron.nvim](https://github.com/hkupty/iron.nvim)
-
-| Mode | LHS               | RHS/Functionality          |
-| ---- | ----------------- | -------------------------- |
-| n    | `<LocalLeader>sc` | Send code chunk to console |
 
 ### Rmarkdown keymaps
 
@@ -747,59 +543,6 @@ The following keymaps rely on [dsf.vim](https://github.com/AndrewRadev/dsf.vim)
 | ov   | `ae` | Text object: a function call     |
 | ov   | `ie` | Text object: inner function call |
 
-#### REPL keymaps for Rmarkdown
-
-The following keymaps rely on [Nvim-R](https://github.com/jalvesaq/Nvim-R)
-
-The same as in section [R REPL keymaps](#repl-keymaps-for-r)
-
-#### Rmarkdown preview keymaps
-
-The following keymaps rely on [markdown-previem.nvim](https://github.com/iamcco/markdown-preview.nvim)
-
-| Mode | LHS           | RHS/Functionality      |
-| ---- | ------------- | ---------------------- |
-| n    | `<Leader>mmp` | Preview rmarkdown file |
-| n    | `<Leader>mmq` | Stop previewing        |
-
-### Markdown keymaps
-
-The following keymaps rely on [markdown-previem.nvim](https://github.com/iamcco/markdown-preview.nvim)
-
-| Mode | LHS           | RHS/Functionality     |
-| ---- | ------------- | --------------------- |
-| n    | `<Leader>mmp` | Preview markdown file |
-| n    | `<Leader>mmq` | Stop previewing       |
-
-### Latex keymaps
-
-The following keymaps rely on [vimtex](https://github.com/lervag/vimtex)
-
-| Mode | LHS               | RHS/Functionality                                                    |
-| ---- | ----------------- | -------------------------------------------------------------------- |
-| n    | `<LocalLeader>ll` | Toggle auto-compile process                                          |
-| n    | `<LocalLeader>lc` | Clean the auxiliary files                                            |
-| n    | `<LocalLeader>lt` | Toggle the table of contents                                         |
-| n    | `<LocalLeader>lv` | View the generated document                                          |
-| n    | `<LocalLeader>lk` | Stop the compilation                                                 |
-| n    | `<LocalLeader>lm` | Toggle compilation based on main file or current file                |
-| n    | `<LocalLeader>la` | Show the context menu for symbol under the cursor                    |
-| n    | `<LocalLeader>lo` | Show the compile output                                              |
-| n    | `<LocalLeader>ss` | Add a surround env pair for current line                             |
-| nv   | `<LocalLeader>s`  | Add a surround env pair for motion / text object / selected text     |
-| nv   | `<LocalLeader>c`  | Add a surround command pair for motion / text object / selected text |
-
-| Mode | LHS   | RHS/Functionality                  |
-| ---- | ----- | ---------------------------------- |
-| n    | `dse` | Delete the surround env            |
-| n    | `dsc` | Delete the surround command        |
-| n    | `ds$` | Delete the surround math delimiter |
-| n    | `dsd` | Delete the surround delimiter      |
-| n    | `cse` | Change the surround env            |
-| n    | `csc` | Change the surround command        |
-| n    | `cs$` | Change the surround math delimiter |
-| n    | `csd` | Change the surround delimiter      |
-
 # Other Notes
 
 1. `vim-sneak` defines relatively inconsistent behavior: in normal mode,
@@ -817,14 +560,3 @@ The following keymaps rely on [vimtex](https://github.com/lervag/vimtex)
 
 4. `vim-matchup` will (intentionally) hide the status-line if the matched pair are spanned
    over entire screen to show the other side of the pair.
-
-5. There are two completion backends for `R`, `Nvim-R` and `languageserver`.
-   `languageserver` provides completions mainly based on static analysis on your code.
-   `Nvim-R` provides completions mainly based on querying the running R session.
-   `languageserver` is more reliable to provide completions for code that is not evaluated,
-   `Nvim-R` is more reliable to provide dynamic completions (e.g. column names of data frame).
-   By default, autocompletion only uses `languageserver` source.
-   If you want to get the completions from `Nvim-R` (e.g. you want to get column names of data frame),
-   you can type `<C-x><C-o>` to manually invoke it.
-   If you want to have `Nvim-R` enabled in the autocompletion popup menu,
-   you can use this plugin: [cmp-nvim-r](https://github.com/jalvesaq/cmp-nvim-r/).

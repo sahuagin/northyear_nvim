@@ -28,8 +28,8 @@ require('nvim-treesitter.configs').setup {
     -- ignore_install = { "javascript" },
 
     highlight = {
+        enable = true,
         -- `false` will disable the whole extension
-        enable = not vim.g.vscode,
         -- list of language that will be disabled
         -- disable = { "c", "rust" },
 
@@ -147,13 +147,5 @@ require('nvim-treesitter.configs').setup {
         enable = true, -- mandatory, false will disable the whole extension
         disable_virtual_text = true,
         -- disable = { "c", "ruby" },  -- optional, list of language that will be disabled
-    },
-    context_commentstring = {
-        enable = true,
-        enable_autocmd = false,
-        config = {
-            r = '# %s',
-            python = '# %s',
-        },
     },
 }

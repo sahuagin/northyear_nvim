@@ -1,7 +1,6 @@
-require('lazy').setup({
+local lazy_plugins = {
     { 'folke/lazy.nvim' },
 
-    { 'milanglacier/smartim' }, -- automatically switch input method when switch mode
     { 'echasnovski/mini.nvim' },
 
     -- text-editing, motions, jumps tools
@@ -11,7 +10,7 @@ require('lazy').setup({
     { 'michaeljsmith/vim-indent-object', lazy = false },
     { 'AndrewRadev/dsf.vim' },
     { 'gbprod/substitute.nvim' },
-    { 'andymass/vim-matchup' },
+    { 'andymass/vim-matchup', event = 'VeryLazy' },
     { 'tommcdo/vim-exchange', lazy = false },
     { 'kana/vim-textobj-user' },
     { 'D4KU/vim-textobj-chainmember' },
@@ -21,24 +20,28 @@ require('lazy').setup({
     -- Tree sitter for enhanced text obj and syntax capturality
     {
         'nvim-treesitter/nvim-treesitter',
-        build = function()
-            require('nvim-treesitter.install').update { sync = true }
-        end,
+        build = ':TSUpdate',
         dependencies = {
             { 'nvim-treesitter/nvim-treesitter-textobjects' },
-            { 'JoosepAlviste/nvim-ts-context-commentstring' },
         },
     },
 
     { 'nvim-lua/plenary.nvim' },
     -- cli tools
+    { 'milanglacier/yarepl.nvim' },
 
     -- installer
     { 'williamboman/mason.nvim' },
     -- neovim installer that helps you to install external command line
     -- programs
+}
 
-}, {
+require('lazy').setup(lazy_plugins, {
+    dev = {
+        path = vim.env.HOME .. '/Desktop/personal-projects',
+        patterns = { 'milanglacier' },
+        fallback = true,
+    },
     defaults = {
         lazy = true,
     },

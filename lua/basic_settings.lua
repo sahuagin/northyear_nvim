@@ -7,6 +7,8 @@ vim.o.backup = false
 
 vim.g.skip_defaults_vim = 1
 
+vim.o.exrc = 1
+
 vim.o.number = true
 vim.o.autoindent = true
 vim.o.softtabstop = 4
@@ -23,7 +25,6 @@ vim.o.cmdheight = 1
 
 vim.o.clipboard = 'unnamedplus'
 vim.o.completeopt = 'menu,menuone,noselect'
-vim.o.tags = vim.o.tags .. ',.tags_columns'
 
 -- don't fold any text at startup
 vim.o.foldmethod = 'indent'
@@ -33,29 +34,24 @@ vim.o.foldlevelstart = 99
 vim.g.mapleader = ' '
 vim.g.maplocalleader = [[  ]]
 
-if not vim.g.vscode then
-    vim.o.mouse = 'a'
-    vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
-    vim.o.termguicolors = true
+vim.o.mouse = 'a'
+vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
+vim.o.termguicolors = true
 
-    local gui_font = {
-        'Sauce_Code_Pro_Nerd_Font_Complete:h15',
-        'Monaco_Nerd_Font_Complete:h15',
-        'SF_Mono_Regular:h15',
-        'Space_Mono_Nerd_Font_Complete:h15',
-        'Monego_Nerd_Font_Fix:h15',
-        'CaskaydiaCove_Nerd_Font:h15',
-    }
+local gui_cursor = {
+    'n-v-c:block',
+    'i-ci-ve:ver70',
+    'r-cr:hor20',
+    'o:hor50',
+    'a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor',
+    'sm:block-blinkwait175-blinkoff150-blinkon175',
+}
 
-    local gui_cursor = {
-        'n-v-c:block',
-        'i-ci-ve:ver70',
-        'r-cr:hor20',
-        'o:hor50',
-        'a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor',
-        'sm:block-blinkwait175-blinkoff150-blinkon175',
-    }
-
-    vim.o.guifont = gui_font[6]
-    vim.o.guicursor = table.concat(gui_cursor, ',')
-end
+-- 'Sauce_Code_Pro_Nerd_Font_Complete:h15',
+-- 'IntoneMono_Nerd_Font_Mono:h16',
+-- 'SF_Mono_Regular:h15',
+-- 'Space_Mono_Nerd_Font_Complete:h15',
+-- 'Monego_Nerd_Font_Fix:h15',
+-- 'CaskaydiaCove_Nerd_Font_Mono:h15',
+vim.o.guifont = 'CaskaydiaCove_Nerd_Font_Mono:h15'
+vim.o.guicursor = table.concat(gui_cursor, ',')
