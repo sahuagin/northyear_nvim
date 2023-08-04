@@ -64,7 +64,7 @@ local function notify(cmd)
 end
 
 local function v_notify(cmd)
-    return string.format("<cmd>call VSCodeNotifyVisual('%s', 1)<CR>", cmd)
+    return string.format("<cmd>call VSCodeNotify('%s')<CR>", cmd)
 end
 
 -- LSP related keymaps
@@ -174,7 +174,7 @@ autocmd('FileType', {
     pattern = { 'r', 'rmd' },
     desc = 'set REPL keymaps for r, rmd',
     callback = function()
-        bufmap(0, 'n', '<LocalLeader>ss', notify 'r.runSelection', opts)
+        bufmap(0, 'v', '<LocalLeader>s', notify 'r.runSelection', opts)
         bufmap(0, 'n', '<LocalLeader>sc', notify 'r.runCurrentChunk', opts)
         bufmap(0, 'n', '<LocalLeader>sgg', notify 'r.runAboveChunks', opts)
     end,
@@ -186,6 +186,7 @@ autocmd('FileType', {
     desc = 'set REPL keymaps for python',
     callback = function()
         bufmap(0, 'n', '<LocalLeader>ss', notify 'jupyter.execSelectionInteractive', opts)
+        bufmap(0, 'v', '<LocalLeader>s', notify 'jupyter.execSelectionInteractive', opts)
         bufmap(0, 'n', '<LocalLeader>sc', notify 'jupyter.runcurrentcell', opts)
         bufmap(0, 'n', '<LocalLeader>sgg', notify 'jupyter.runallcellsabove.palette', opts)
     end,
