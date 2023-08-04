@@ -192,4 +192,6 @@ autocmd('FileType', {
     end,
 })
 
+vim.cmd.colorscheme 'quiet' -- avoid neovim colorscheme highlights conflict vscode
+
 return M
